@@ -13,7 +13,7 @@ public class ArrayStorage {
     int size = 0;
 
     public void clear() {
-        this.storage = new Resume[this.STORAGE_SIZE];
+        Arrays.fill(this.storage, null);
         this.size = 0;
     }
 
@@ -28,14 +28,18 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        int i = getResumePosition(r.getUuid());
-        if(i == -1 && this.size != this.STORAGE_SIZE){
-            this.storage[this.size] = r;
-            ++this.size;
+        if (this.size != this.STORAGE_SIZE){
+
+            int i = getResumePosition(r.getUuid());
+            if(i == -1) {
+                this.storage[this.size] = r;
+                ++this.size;
+                return;
+            }
+            System.out.println("ERROR SAVE");
             return;
         }
-
-        System.out.println("ERROR SAVE");
+        System.out.println("ERROR OVERFLOW");
     }
 
     public Resume get(String uuid) {
