@@ -28,18 +28,14 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (this.size != this.STORAGE_SIZE){
-
-            int i = getResumePosition(r.getUuid());
-            if(i == -1) {
-                this.storage[this.size] = r;
-                ++this.size;
-                return;
-            }
-            System.out.println("ERROR SAVE");
-            return;
+        if( getResumePosition(r.getUuid()) != -1) {
+                System.out.println("ERROR SAVE");
+        } else if (this.size == this.STORAGE_SIZE) {
+            System.out.println("ERROR OVERFLOW");
+        } else {
+            this.storage[this.size] = r;
+            ++this.size;
         }
-        System.out.println("ERROR OVERFLOW");
     }
 
     public Resume get(String uuid) {
@@ -53,20 +49,20 @@ public class ArrayStorage {
     }
 
     public void delete(String uuid) {
-        //ищем элемент
         int i = getResumePosition(uuid);
+
         //если находим заданный элемент
-        if (i > -1){
-            this.storage[i] = null;
-            //ставим на его место последний
-            this.storage[i] = this.storage[this.size - 1];
-            //последний тоже зануляем, просто освободить ячейку, удалить объект
-            this.storage[this.size - 1] = null;
-            //и выходим
-            --this.size;
+        if (i == -1) {
+            System.out.println("ERROR DELETE");
             return;
         }
-        System.out.println("ERROR DELETE");
+
+        //ставим на его место последний
+        this.storage[i] = this.storage[this.size - 1];
+        //последний зануляем, просто освободить ячейку, удалить объект
+        this.storage[this.size - 1] = null;
+        //и выходим
+        --this.size;
     }
 
     /**
