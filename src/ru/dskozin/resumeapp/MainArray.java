@@ -2,6 +2,8 @@ package ru.dskozin.resumeapp;
 
 import ru.dskozin.resumeapp.model.Resume;
 import ru.dskozin.resumeapp.storage.ArrayStorage;
+import ru.dskozin.resumeapp.storage.SortedArrayStorage;
+import ru.dskozin.resumeapp.storage.Storage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +13,7 @@ import java.io.InputStreamReader;
  * Test for com.urise.webapp.storage.ru.dskozin.resumeapp.storage.ArrayStorage
  */
 public class MainArray {
-    private final static ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+    private final static Storage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
