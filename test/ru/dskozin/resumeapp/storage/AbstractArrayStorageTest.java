@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractArrayStorageTest {
     static Storage storage;
-    private final String UUID_1 = "uuid1";
-    private final String UUID_2 = "uuid2";
-    private final String UUID_3 = "uuid3";
+    private static final String UUID_1 = "uuid1";
+    private static final String UUID_2 = "uuid2";
+    private static final String UUID_3 = "uuid3";
 
     //перед каждым тестом мы наполняем стораж
     @Before
@@ -63,15 +63,16 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected = StorageException.class)
     public void saveStorageOverflow() throws NoSuchFieldException, IllegalAccessException{
 
-        //получаем значение поля максимального размера хранилища
-        Field maxSize = storage.getClass().getSuperclass().getDeclaredField("STORAGE_SIZE");
-        maxSize.setAccessible(true);
-        int max_size = (int) maxSize.get(storage);
-
-        //добавляем элементы начиная с текущего индекса и до max_size + 10
-        for (int i = storage.size() - 1; i < max_size + 10; i++) {
+        //добавляем элементы начиная с текущего индекса и до max_size - 1 (т.е. под завязку)
+        for (int i = storage.size() - 1; i < AbstractArrayStorage.STORAGE_SIZE - 1; i++) {
             storage.save(new Resume("uuid_" + i));
         }
+
+        //проверяем что storage забит
+        assertTrue(storage.size() == AbstractArrayStorage.STORAGE_SIZE);
+
+        //пробуем добавить еще элемент сверх размера
+        storage.save(new Resume(UUID_3));
     }
 
     //проверка на обновление стоража

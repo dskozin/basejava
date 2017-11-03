@@ -24,7 +24,7 @@ public class MainReflection {
         //меняем поле
         field.set(r, "dummy");
         //получаем метод класса и вызываем его
-        Method method = r.getClass().getDeclaredMethod("toString", null);
-        System.out.println(method.invoke(r, null));
+        Method method = r.getClass().getDeclaredMethod("toString");
+        System.out.println(method.invoke(r ));
     }
 }
