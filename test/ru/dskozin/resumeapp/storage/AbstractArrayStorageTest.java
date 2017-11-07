@@ -62,8 +62,11 @@ public abstract class AbstractArrayStorageTest {
     //Проверка сохранения под завязку
     @Test
     public void saveToLimit(){
+        //очищаем храниище
+        storage.clear();
+
         //добавляем элементы начиная с текущего индекса и до max_size - 1 (т.е. под завязку)
-        for (int i = storage.size() - 1; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
+        for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
             storage.save(new Resume("uuid_" + i));
         }
 
@@ -74,9 +77,11 @@ public abstract class AbstractArrayStorageTest {
     //проверка на переполнение стораджа
     @Test(expected = StorageException.class)
     public void saveStorageOverflow() throws NoSuchFieldException, IllegalAccessException{
+        //очищаем хранилище
+        storage.clear();
 
         //добавляем элементы начиная с текущего индекса и до max_size - 1 (т.е. под завязку)
-        for (int i = storage.size() - 1; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
+        for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
             storage.save(new Resume("uuid_" + i));
         }
 
