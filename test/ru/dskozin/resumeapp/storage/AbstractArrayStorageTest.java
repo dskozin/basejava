@@ -1,6 +1,7 @@
 package ru.dskozin.resumeapp.storage;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
@@ -59,30 +60,22 @@ public abstract class AbstractArrayStorageTest {
         storage.save(new Resume(UUID_1));
     }
 
-    //Проверка сохранения под завязку
-    @Test
-    public void saveToLimit(){
-        //очищаем храниище
-        storage.clear();
-
-        //добавляем элементы начиная с текущего индекса и до max_size - 1 (т.е. под завязку)
-        for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
-            storage.save(new Resume("uuid_" + i));
-        }
-
-        //проверяем что storage забит
-        assertTrue(storage.size() == AbstractArrayStorage.STORAGE_SIZE);
-    }
-
     //проверка на переполнение стораджа
     @Test(expected = StorageException.class)
-    public void saveStorageOverflow() throws NoSuchFieldException, IllegalAccessException{
+    public void saveStorageOverflow() throws Exception{
         //очищаем хранилище
         storage.clear();
 
-        //добавляем элементы начиная с текущего индекса и до max_size - 1 (т.е. под завязку)
-        for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
-            storage.save(new Resume("uuid_" + i));
+        //если получаем исключение во время наполнения, то тест не пройден
+        try {
+            //добавляем элементы начиная с текущего индекса и до max_size (т.е. под завязку)
+            for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
+                storage.save(new Resume("uuid_" + i));
+            }
+            //проверяем что storage забит
+            assertTrue(storage.size() == AbstractArrayStorage.STORAGE_SIZE);
+        } catch (StorageException e) {
+            Assert.fail();
         }
 
         //пробуем добавить еще элемент сверх размера
@@ -114,7 +107,13 @@ public abstract class AbstractArrayStorageTest {
 
         //текущий размер стораджа
         int size = storage.size();
-        storage.delete(UUID_2);
+
+        //пробуем удалить. Если исключение во время удаления - это ошибка
+        try {
+            storage.delete(UUID_2);
+        } catch (NotExistStorageException e){
+            Assert.fail();
+        }
 
         //размер на единицу меньше после удаления
         assertTrue(storage.size() == size - 1);
@@ -138,7 +137,7 @@ public abstract class AbstractArrayStorageTest {
 
     //проверка получения массива элементов
     @Test
-    public void getAll() {
+    public void getAll() throws Exception {
 
         //должен быть получен [] из двух элементов
         assertTrue(storage.getAll().length == 2);
@@ -151,6 +150,7 @@ public abstract class AbstractArrayStorageTest {
     //проверка получения конкретного элемента
     @Test
     public void get() throws Exception {
+        assertEquals(storage.get(UUID_1), new Resume(UUID_1));
         assertEquals(storage.get(UUID_2), new Resume(UUID_2));
     }
 
