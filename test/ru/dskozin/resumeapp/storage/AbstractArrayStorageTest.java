@@ -1,5 +1,6 @@
 package ru.dskozin.resumeapp.storage;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +11,7 @@ import ru.dskozin.resumeapp.exception.StorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -139,11 +141,13 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void getAll() throws Exception {
 
+        Resume[] arr;
         //должен быть получен [] из двух элементов
-        assertTrue(storage.getAll().length == 2);
+        assertTrue((arr = storage.getAll()).length == 2);
 
+        Arrays.sort(arr);
         //там лежат объекты с UUID_1 и UUID_2
-        assertArrayEquals(storage.getAll(),
+        assertArrayEquals(arr,
                 new Resume[]{new Resume(UUID_1), new Resume(UUID_2)});
     }
 

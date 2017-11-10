@@ -6,6 +6,8 @@ import ru.dskozin.resumeapp.exception.StorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractArrayStorage implements Storage {
 
@@ -59,9 +61,7 @@ public abstract class AbstractArrayStorage implements Storage {
         reject(index);
 
         //последний зануляем, просто освободить ячейку, удалить объект
-        storage[size - 1] = null;
-        //и выходим
-        size--;
+        storage[--size] = null;
     }
 
     @Override
