@@ -18,23 +18,16 @@ public class MapStorage extends AbstractStorage{
 
     @Override
     void storageSave(Resume r) {
-        if (storage.containsKey(r.getUuid()))
-            throw new ExistStorageException(r.getUuid());
-
         storage.put(r.getUuid(), r);
     }
 
     @Override
     void storageUpdate(Resume r) {
-        containCheck(r.getUuid());
-
         storage.put(r.getUuid(), r);
     }
 
     @Override
     void storageDelete(String uuid) {
-        containCheck(uuid);
-
         storage.remove(uuid);
     }
 
@@ -50,13 +43,10 @@ public class MapStorage extends AbstractStorage{
 
     @Override
     Resume storageGet(String uuid) {
-        containCheck(uuid);
-
         return storage.get(uuid);
     }
 
-    private void containCheck(String uuid){
-        if (!storage.containsKey(uuid))
-            throw new NotExistStorageException(uuid);
+    int getIndex(Resume r){
+        return storage.containsKey(r.getUuid()) ? 1 : -1;
     }
 }

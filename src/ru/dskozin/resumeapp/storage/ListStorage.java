@@ -18,20 +18,17 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     void storageSave(Resume r) {
-        if (storage.contains(r))
-            throw new ExistStorageException(r.getUuid());
-
         storage.add(r);
     }
 
     @Override
     void storageUpdate(Resume r) {
-        storage.set(getIndex(r.getUuid()), r);
+        storage.set(getIndex(r), r);
     }
 
     @Override
     void storageDelete(String uuid) {
-        storage.remove(getIndex(uuid));
+        storage.remove(getIndex(new Resume(uuid)));
     }
 
     @Override
@@ -46,14 +43,10 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     Resume storageGet(String uuid) {
-        return storage.get(getIndex(uuid));
+        return storage.get(getIndex(new Resume(uuid)));
     }
 
-    private int getIndex(String uuid){
-        int index;
-        if ((index = storage.indexOf(new Resume(uuid))) < 0)
-            throw new NotExistStorageException(uuid);
-
-        return index;
+    int getIndex(Resume r){
+        return storage.indexOf(r);
     }
 }

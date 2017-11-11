@@ -1,5 +1,7 @@
 package ru.dskozin.resumeapp.storage;
 
+import ru.dskozin.resumeapp.exception.ExistStorageException;
+import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 abstract public class AbstractStorage implements Storage {
@@ -11,6 +13,7 @@ abstract public class AbstractStorage implements Storage {
     abstract int storageSize();
     abstract Resume[] storageGetAll();
     abstract Resume storageGet(String uuid);
+    abstract int getIndex(Resume r);
 
 
     @Override
@@ -20,16 +23,25 @@ abstract public class AbstractStorage implements Storage {
 
     @Override
     public void save(Resume r) {
+        if(getIndex(r) >= 0)
+            throw new ExistStorageException(r.getUuid());
+
         storageSave(r);
     }
 
     @Override
     public void update(Resume r) {
+        if(getIndex(r) < 0)
+            throw new NotExistStorageException(r.getUuid());
+
         storageUpdate(r);
     }
 
     @Override
     public void delete(String uuid) {
+        if(getIndex(new Resume(uuid)) < 0)
+            throw new NotExistStorageException(uuid);
+
         storageDelete(uuid);
     }
 
@@ -45,8 +57,9 @@ abstract public class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
+        if (getIndex(new Resume(uuid)) < 0)
+            throw new NotExistStorageException(uuid);
+
         return storageGet(uuid);
     }
-
-
 }
