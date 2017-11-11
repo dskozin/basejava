@@ -1,7 +1,5 @@
 package ru.dskozin.resumeapp.storage;
 
-import ru.dskozin.resumeapp.exception.ExistStorageException;
-import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.HashMap;
@@ -11,42 +9,44 @@ public class MapStorage extends AbstractStorage{
 
     Map<String, Resume> storage = new HashMap<>();
 
+    //----методы интерфейса Storage ------
     @Override
-    void storageClear() {
+    public void clear() {
         storage.clear();
     }
 
     @Override
-    void storageSave(Resume r) {
-        storage.put(r.getUuid(), r);
-    }
-
-    @Override
-    void storageUpdate(Resume r) {
-        storage.put(r.getUuid(), r);
-    }
-
-    @Override
-    void storageDelete(String uuid) {
-        storage.remove(uuid);
-    }
-
-    @Override
-    int storageSize() {
+    public int size() {
         return storage.size();
     }
 
     @Override
-    Resume[] storageGetAll() {
+    public Resume[] getAll() {
         return storage.values().toArray(new Resume[0]);
     }
 
+    //----методы абстрактного класса-------
     @Override
-    Resume storageGet(String uuid) {
+    void storageSave(Resume r, int index) {
+        storage.put(r.getUuid(), r);
+    }
+
+    @Override
+    void storageUpdate(Resume r, int index) {
+        storage.put(r.getUuid(), r);
+    }
+
+    @Override
+    void storageDelete(String uuid, int index) {
+        storage.remove(uuid);
+    }
+
+    @Override
+    Resume storageGet(String uuid, int index) {
         return storage.get(uuid);
     }
 
-    int getIndex(Resume r){
-        return storage.containsKey(r.getUuid()) ? 1 : -1;
+    int getIndex(String uuid){
+        return storage.containsKey(uuid) ? 1 : -1;
     }
 }

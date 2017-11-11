@@ -1,7 +1,5 @@
 package ru.dskozin.resumeapp.storage;
 
-import ru.dskozin.resumeapp.exception.ExistStorageException;
-import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.ArrayList;
@@ -11,42 +9,44 @@ public class ListStorage extends AbstractStorage {
 
     List<Resume> storage = new ArrayList<>();
 
+    //----методы интерфейса Storage ------
     @Override
-    void storageClear() {
+    public void clear() {
         storage.clear();
     }
 
     @Override
-    void storageSave(Resume r) {
-        storage.add(r);
-    }
-
-    @Override
-    void storageUpdate(Resume r) {
-        storage.set(getIndex(r), r);
-    }
-
-    @Override
-    void storageDelete(String uuid) {
-        storage.remove(getIndex(new Resume(uuid)));
-    }
-
-    @Override
-    int storageSize() {
+    public int size() {
         return storage.size();
     }
 
     @Override
-    Resume[] storageGetAll() {
-       return storage.toArray(new Resume[0]);
+    public Resume[] getAll() {
+        return storage.toArray(new Resume[0]);
+    }
+
+    //----методы абстрактного класса-------
+    @Override
+    void storageSave(Resume r, int index) {
+        storage.add(r);
     }
 
     @Override
-    Resume storageGet(String uuid) {
-        return storage.get(getIndex(new Resume(uuid)));
+    void storageUpdate(Resume r, int index) {
+        storage.set(getIndex(r.getUuid()), r);
     }
 
-    int getIndex(Resume r){
-        return storage.indexOf(r);
+    @Override
+    void storageDelete(String uuid, int index) {
+        storage.remove(getIndex(uuid));
+    }
+
+    @Override
+    Resume storageGet(String uuid, int index) {
+        return storage.get(getIndex(uuid));
+    }
+
+    int getIndex(String uuid){
+        return storage.indexOf(new Resume(uuid));
     }
 }

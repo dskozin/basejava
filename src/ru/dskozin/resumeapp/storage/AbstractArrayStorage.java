@@ -9,59 +9,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage{
 
     protected static final int STORAGE_SIZE = 10000;
     protected Resume[] storage = new Resume[STORAGE_SIZE];
     int size = 0;
 
+    //----методы интерфейса Storage ------
     @Override
     public void clear() {
         Arrays.fill(storage, 0, size,null);
         this.size = 0;
-    }
-
-    @Override
-    public void save(Resume resume){
-        //возвращаемое значение указывает индекс вставки -1,
-        int index = getIndex(resume.getUuid());
-
-        //проверяем что элемента еще нет и нет переполнения
-        if(index >= 0){
-            throw new ExistStorageException(resume.getUuid());
-        } else if(size == STORAGE_SIZE){
-            throw new StorageException("Storage overflow", resume.getUuid());
-        }
-
-        //вызываем специфичный метод вставки элемента
-        insert(resume, index);
-        ++size;
-    }
-
-    @Override
-    public void update(Resume r){
-        int i = getIndex(r.getUuid());
-        if(i < 0){
-            throw new NotExistStorageException(r.getUuid());
-        }
-        storage[i] = r;
-    }
-
-    @Override
-    public void delete(String uuid){
-        //получаем элемент для удаления
-        int index = getIndex(uuid);
-
-        //проверяем что элемент существует
-        if(index < 0){
-            throw new NotExistStorageException(uuid);
-        }
-
-        //вызываем специфичный метод удаления
-        reject(index);
-
-        //последний зануляем, просто освободить ячейку, удалить объект
-        storage[--size] = null;
     }
 
     @Override
@@ -71,24 +29,40 @@ public abstract class AbstractArrayStorage implements Storage {
 
     @Override
     public Resume[] getAll() {
-
         return Arrays.copyOfRange(storage,0,size);
     }
 
+    //----методы абстрактного класса-------
     @Override
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        //binarySearch возвращает отрицательный lowIndex, а не -1
-        //поэтому укажем в условии что меньше 0, а не == -1
-        if(index < 0){
-            throw new NotExistStorageException(uuid);
+    public void storageSave(Resume resume, int index){
+         if(size == STORAGE_SIZE){
+            throw new StorageException("Storage overflow", resume.getUuid());
         }
+
+        //вызываем специфичный метод вставки элемента
+        insert(resume, index);
+        ++size;
+    }
+
+    @Override
+    public void storageUpdate(Resume r, int i){
+        storage[i] = r;
+    }
+
+    @Override
+    public void storageDelete(String uuid, int index){
+        //вызываем специфичный метод удаления
+        reject(index);
+
+        //последний зануляем, просто освободить ячейку, удалить объект
+        storage[--size] = null;
+    }
+
+    @Override
+    public Resume storageGet(String uuid, int index) {
         return storage[index];
     }
 
-    protected abstract int getIndex(String uuid);
-
-    protected abstract void insert(Resume resume, int index);
-
-    protected abstract void reject(int index);
+    abstract void reject(int index);
+    abstract void insert(Resume r, int index);
 }
