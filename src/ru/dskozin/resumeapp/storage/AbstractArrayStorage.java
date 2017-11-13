@@ -34,33 +34,38 @@ public abstract class AbstractArrayStorage extends AbstractStorage{
 
     //----методы абстрактного класса-------
     @Override
-    public void storageSave(Resume resume, int index){
+    public void storageSave(Resume resume, Object index){
          if(size == STORAGE_SIZE){
             throw new StorageException("Storage overflow", resume.getUuid());
         }
 
         //вызываем специфичный метод вставки элемента
-        insert(resume, index);
+        insert(resume, (int)index);
         ++size;
     }
 
     @Override
-    public void storageUpdate(Resume r, int i){
-        storage[i] = r;
+    public void storageUpdate(Resume r, Object i){
+        storage[(int)i] = r;
     }
 
     @Override
-    public void storageDelete(String uuid, int index){
+    public void storageDelete(Object index){
         //вызываем специфичный метод удаления
-        reject(index);
+        reject((int)index);
 
         //последний зануляем, просто освободить ячейку, удалить объект
         storage[--size] = null;
     }
 
     @Override
-    public Resume storageGet(String uuid, int index) {
-        return storage[index];
+    public Resume storageGet(Object index) {
+        return storage[(int)index];
+    }
+
+    @Override
+    boolean found(Object index){
+        return (int)index >= 0;
     }
 
     abstract void reject(int index);
