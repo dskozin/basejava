@@ -22,32 +22,32 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
+        return storage.toArray(new Resume[storage.size()]);
     }
 
 
     //----методы абстрактного класса-------
     @Override
-    void storageSave(Resume r, Object index) {
+    protected void storageSave(Resume r, Object index) {
         storage.add(r);
     }
 
     @Override
-    void storageUpdate(Resume r, Object index) {
+    protected void storageUpdate(Resume r, Object index) {
         storage.set((int)index, r);
     }
 
     @Override
-    void storageDelete(Object index) {
+    protected void storageDelete(Object index) {
         storage.remove((int)index);
     }
 
     @Override
-    Resume storageGet(Object index) {
+    protected Resume storageGet(Object index) {
         return storage.get((int)index);
     }
 
-    Object getIndex(String uuid){
+    protected Integer getIndex(String uuid){
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid))
                 return i;

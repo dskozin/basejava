@@ -14,7 +14,9 @@ abstract public class AbstractStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-        String uuid = r.getUuid(); Object index;
+        String uuid = r.getUuid();
+        Object index;
+
         if(found(index = getIndex(uuid)))
             throw new ExistStorageException(r.getUuid());
 

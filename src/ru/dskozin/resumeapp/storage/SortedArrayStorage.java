@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
-    public void insert(Resume resume, int index) {
+    protected void insert(Resume resume, Integer index) {
         //формируем индекс вставки
         index = Math.abs(index) - 1;
 
@@ -18,7 +18,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    public void reject(int index) {
+    protected void reject(Integer index) {
         //если элемент не последний, то сдвигаем массив на единицу влево
         if(index + 1 != size)
             System.arraycopy(storage, index + 1, storage, index, size - (index + 1));

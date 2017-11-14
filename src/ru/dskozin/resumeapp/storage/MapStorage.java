@@ -27,26 +27,26 @@ public class MapStorage extends AbstractStorage{
 
     //----методы абстрактного класса-------
     @Override
-    void storageSave(Resume r, Object index) {
+    protected void storageSave(Resume r, Object index) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    void storageUpdate(Resume r, Object index) {
+    protected void storageUpdate(Resume r, Object index) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    void storageDelete(Object index) {
+    protected void storageDelete(Object index) {
         storage.remove(index);
     }
 
     @Override
-    Resume storageGet(Object index) {
+    protected Resume storageGet(Object index) {
         return storage.get(index);
     }
 
-    String getIndex(String uuid){
+    protected String getIndex(String uuid){
         return storage.containsKey(uuid) ? uuid : null;
     }
 }
