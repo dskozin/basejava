@@ -1,5 +1,6 @@
 package ru.dskozin.resumeapp.storage;
 
+import com.sun.org.apache.regexp.internal.RE;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.exception.StorageException;
@@ -7,6 +8,7 @@ import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractArrayStorage extends AbstractStorage{
@@ -30,6 +32,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage{
     @Override
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage,0,size);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> ret = Arrays.asList(Arrays.copyOfRange(storage, 0, size));
+        ret.sort(Resume.nameComparator());
+        return ret;
     }
 
     //----методы абстрактного класса-------

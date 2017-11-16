@@ -7,6 +7,6 @@ public class MapStorageTest extends AbstractStorageTest {
     @BeforeClass
     public static void init(){
         //инициализовать сторадж
-        storage = new MapStorage();
+        storage = new MapUuidStorage();
     }
 }

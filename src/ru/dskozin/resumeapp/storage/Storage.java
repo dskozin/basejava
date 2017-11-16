@@ -2,6 +2,8 @@ package ru.dskozin.resumeapp.storage;
 
 import ru.dskozin.resumeapp.model.Resume;
 
+import java.util.List;
+
 public interface Storage {
 
     void clear();
@@ -15,6 +17,8 @@ public interface Storage {
     int size();
 
     Resume[] getAll();
+
+    List<Resume> getAllSorted();
 
     Resume get(String uuid);
 

@@ -3,6 +3,7 @@ package ru.dskozin.resumeapp.storage;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
@@ -28,5 +29,10 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected Object getIndex(String uuid) {
         Resume searchKey = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 }

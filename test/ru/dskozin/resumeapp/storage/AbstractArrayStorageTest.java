@@ -36,6 +36,6 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest{
         }
 
         //пробуем добавить еще элемент сверх размера
-        storage.save(new Resume(UUID_3));
+        storage.save(new Resume(UUID_3, NAME_3));
     }
 }

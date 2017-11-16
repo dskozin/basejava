@@ -2,10 +2,9 @@ package ru.dskozin.resumeapp.storage;
 
 import ru.dskozin.resumeapp.model.Resume;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class MapStorage extends AbstractStorage{
+public class MapUuidStorage extends AbstractStorage{
 
     Map<String, Resume> storage = new HashMap<>();
 
@@ -23,6 +22,13 @@ public class MapStorage extends AbstractStorage{
     @Override
     public Resume[] getAll() {
         return storage.values().toArray(new Resume[0]);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> ret = new ArrayList<>(storage.values());
+        ret.sort(Resume.nameComparator());
+        return ret;
     }
 
     //----методы абстрактного класса-------
