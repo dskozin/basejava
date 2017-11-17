@@ -1,17 +1,9 @@
 package ru.dskozin.resumeapp.storage;
 
-import com.sun.org.apache.regexp.internal.RE;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import ru.dskozin.resumeapp.exception.ExistStorageException;
-import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.exception.StorageException;
 import ru.dskozin.resumeapp.model.Resume;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -36,6 +28,6 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest{
         }
 
         //пробуем добавить еще элемент сверх размера
-        storage.save(new Resume(UUID_3, NAME_3));
+        storage.save(new Resume(NAME_3, UUID_3));
     }
 }

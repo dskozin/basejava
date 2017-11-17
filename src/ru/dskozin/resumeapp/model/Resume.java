@@ -4,25 +4,29 @@ import java.util.Comparator;
 import java.util.UUID;
 
 public class Resume implements Comparable<Resume>{
-    private final static String DEFAULT_NAME = "";
+
+    private static final String DEFAULT_EMAIL = "";
 
     // Unique identifier
     private final String uuid;
     private String fullName;
+    private String email;
+
     private static final Comparator<Resume> NAME_COMPARATOR =
             Comparator.comparing(Resume::getFullName);
 
-    public Resume() {
-        this(UUID.randomUUID().toString());
+    public Resume(String fullName) {
+        this(fullName, UUID.randomUUID().toString(), DEFAULT_EMAIL);
     }
 
-    public Resume(String uuid) {
-        this(uuid, DEFAULT_NAME);
+    public Resume(String fullName, String uuid) {
+        this(fullName, uuid, DEFAULT_EMAIL );
     }
 
-    public Resume(String uuid, String fullName){
+    public Resume(String fullName, String uuid, String email){
         this.uuid = uuid;
         this.fullName = fullName;
+        this.email = email;
     }
 
     public static Comparator<Resume> nameComparator(){
@@ -37,6 +41,10 @@ public class Resume implements Comparable<Resume>{
         return fullName;
     }
 
+    public String getEmail(){
+        return email;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,7 +53,8 @@ public class Resume implements Comparable<Resume>{
         Resume resume = (Resume) o;
 
         if (uuid != null ? !uuid.equals(resume.uuid) : resume.uuid != null) return false;
-        return fullName != null ? fullName.equals(resume.fullName) : resume.fullName == null;
+        if (fullName != null ? !fullName.equals(resume.fullName) : resume.fullName != null) return false;
+        return email != null ? email.equals(resume.email) : resume.email == null;
     }
 
     @Override

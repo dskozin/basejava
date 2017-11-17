@@ -12,7 +12,7 @@ public class MainReflection {
             NoSuchMethodException,
             InvocationTargetException {
 
-        Resume r = new Resume();
+        Resume r = new Resume("Dmitriy");
         //получаем поле класса
         Field field = r.getClass().getDeclaredFields()[0];
         //разрешаем доступ к нему

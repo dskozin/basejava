@@ -16,8 +16,6 @@ public interface Storage {
 
     int size();
 
-    Resume[] getAll();
-
     List<Resume> getAllSorted();
 
     Resume get(String uuid);

@@ -7,18 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapNameStorage extends AbstractStorage{
+public class MapEmailStorage extends AbstractStorage{
 
     Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
         return storage.size();
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[0]);
     }
 
     @Override
@@ -30,7 +25,7 @@ public class MapNameStorage extends AbstractStorage{
 
     @Override
     protected void storageSave(Resume r, Object index) {
-        storage.put(r.getFullName(), r);
+        storage.put(r.getEmail(), r);
     }
 
     @Override
@@ -45,7 +40,7 @@ public class MapNameStorage extends AbstractStorage{
 
     @Override
     protected void storageUpdate(Resume r, Object index) {
-        storage.put(r.getFullName(), r);
+        storage.put(r.getEmail(), r);
     }
 
     @Override
@@ -53,7 +48,7 @@ public class MapNameStorage extends AbstractStorage{
 
         for(Resume r : storage.values()){
             if (r.getUuid().equals(uuid))
-                return r.getFullName();
+                return r.getEmail();
         }
         return null;
     }
