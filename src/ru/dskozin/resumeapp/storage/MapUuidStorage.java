@@ -20,10 +20,8 @@ public class MapUuidStorage extends AbstractStorage{
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> ret = new ArrayList<>(storage.values());
-        ret.sort(Resume.nameComparator());
-        return ret;
+    List<Resume> getStorageAsList() {
+        return new ArrayList<>(storage.values());
     }
 
     //----методы абстрактного класса-------

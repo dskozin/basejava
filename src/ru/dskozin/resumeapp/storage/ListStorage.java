@@ -21,10 +21,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> ret = storage;
-        ret.sort(Resume.nameComparator());
-        return ret;
+    List<Resume> getStorageAsList() {
+        return storage;
     }
 
     //----методы абстрактного класса-------

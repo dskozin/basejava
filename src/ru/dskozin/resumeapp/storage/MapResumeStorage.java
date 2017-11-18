@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapEmailStorage extends AbstractStorage{
+public class MapResumeStorage extends AbstractStorage{
 
-    Map<String, Resume> storage = new HashMap<>();
+    Map<Resume, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
@@ -17,15 +17,13 @@ public class MapEmailStorage extends AbstractStorage{
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> ret = new ArrayList<>(storage.values());
-        ret.sort(Resume.nameComparator());
-        return ret;
+    List<Resume> getStorageAsList() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
     protected void storageSave(Resume r, Object index) {
-        storage.put(r.getEmail(), r);
+        storage.put(r, r);
     }
 
     @Override
@@ -40,15 +38,14 @@ public class MapEmailStorage extends AbstractStorage{
 
     @Override
     protected void storageUpdate(Resume r, Object index) {
-        storage.put(r.getEmail(), r);
+        storage.put(r, r);
     }
 
     @Override
-    protected String getIndex(String uuid) {
-
+    protected Resume getIndex(String uuid) {
         for(Resume r : storage.values()){
             if (r.getUuid().equals(uuid))
-                return r.getEmail();
+                return r;
         }
         return null;
     }

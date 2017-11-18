@@ -9,7 +9,6 @@ import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;

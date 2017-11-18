@@ -4,6 +4,9 @@ import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
 
+import java.util.Collections;
+import java.util.List;
+
 abstract public class AbstractStorage implements Storage {
 
     abstract void storageUpdate(Resume r, Object index);
@@ -11,6 +14,7 @@ abstract public class AbstractStorage implements Storage {
     abstract Resume storageGet(Object index);
     abstract Object getIndex(String uuid);
     abstract void storageSave(Resume r, Object index);
+    abstract List<Resume> getStorageAsList();
 
     @Override
     public void save(Resume r) {
@@ -39,6 +43,13 @@ abstract public class AbstractStorage implements Storage {
     public Resume get(String uuid) {
         Object index = notFoundOrKey(uuid);
         return storageGet(index);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = getStorageAsList();
+        Collections.sort(list, Resume.nameComparator());
+        return list;
     }
 
     boolean found(Object index){
