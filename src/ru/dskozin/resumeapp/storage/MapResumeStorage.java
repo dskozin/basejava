@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MapResumeStorage extends AbstractStorage{
 
-    Map<Resume, Resume> storage = new HashMap<>();
+    Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
@@ -23,31 +23,27 @@ public class MapResumeStorage extends AbstractStorage{
 
     @Override
     protected void storageSave(Resume r, Object index) {
-        storage.put(r, r);
+        storage.put(r.getUuid(), r);
     }
 
     @Override
     void storageDelete(Object index) {
-        storage.remove(index);
+        storage.remove(((Resume)index).getUuid());
     }
 
     @Override
     Resume storageGet(Object index) {
-        return storage.get(index);
+        return (Resume) index;
     }
 
     @Override
     protected void storageUpdate(Resume r, Object index) {
-        storage.put(r, r);
+        storage.put(r.getUuid(), r);
     }
 
     @Override
     protected Resume getIndex(String uuid) {
-        for(Resume r : storage.values()){
-            if (r.getUuid().equals(uuid))
-                return r;
-        }
-        return null;
+        return storage.get(uuid);
     }
 
     public void clear() {

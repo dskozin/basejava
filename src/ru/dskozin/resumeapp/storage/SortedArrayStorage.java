@@ -3,9 +3,12 @@ package ru.dskozin.resumeapp.storage;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
+
+    private static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid);
 
     protected void insert(Resume resume, Integer index) {
         //формируем индекс вставки
@@ -28,6 +31,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected Object getIndex(String uuid) {
         Resume searchKey = new Resume("", uuid);
-        return Arrays.binarySearch(storage, 0, size, searchKey);
+        return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR);
     }
 }
