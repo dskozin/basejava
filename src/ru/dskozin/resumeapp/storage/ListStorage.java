@@ -22,7 +22,8 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     List<Resume> getStorageAsList() {
-        return storage;
+        //возвращаем безопасно
+        return new ArrayList<>(storage);
     }
 
     //----методы абстрактного класса-------
