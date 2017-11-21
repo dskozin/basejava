@@ -1,6 +1,5 @@
 package ru.dskozin.resumeapp.model;
 
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 
