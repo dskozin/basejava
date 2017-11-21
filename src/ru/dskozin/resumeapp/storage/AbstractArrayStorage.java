@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractArrayStorage extends AbstractStorage{
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer>{
 
     static final int STORAGE_SIZE = 10000;
     protected Resume[] storage = new Resume[STORAGE_SIZE];
@@ -36,38 +36,38 @@ public abstract class AbstractArrayStorage extends AbstractStorage{
 
     //----методы абстрактного класса-------
     @Override
-    protected void storageSave(Resume resume, Object index){
+    protected void storageSave(Resume resume, Integer index){
          if(size == STORAGE_SIZE){
             throw new StorageException("Storage overflow", resume.getUuid());
         }
 
         //вызываем специфичный метод вставки элемента
-        insert(resume, (int)index);
+        insert(resume, index);
         ++size;
     }
 
     @Override
-    protected void storageUpdate(Resume r, Object i){
-        storage[(int)i] = r;
+    protected void storageUpdate(Resume r, Integer i){
+        storage[i] = r;
     }
 
     @Override
-    protected void storageDelete(Object index){
+    protected void storageDelete(Integer index){
         //вызываем специфичный метод удаления
-        reject((Integer)index);
+        reject(index);
 
         //последний зануляем, просто освободить ячейку, удалить объект
         storage[--size] = null;
     }
 
     @Override
-    protected Resume storageGet(Object index) {
-        return storage[(int)index];
+    protected Resume storageGet(Integer index) {
+        return storage[index];
     }
 
     @Override
-    protected boolean found(Object index){
-        return (Integer)index >= 0;
+    protected boolean found(Integer index){
+        return index >= 0;
     }
 
     protected abstract void reject(Integer index);

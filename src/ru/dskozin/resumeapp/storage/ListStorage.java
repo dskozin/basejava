@@ -5,7 +5,7 @@ import ru.dskozin.resumeapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     List<Resume> storage = new ArrayList<>();
 
@@ -28,23 +28,23 @@ public class ListStorage extends AbstractStorage {
 
     //----методы абстрактного класса-------
     @Override
-    protected void storageSave(Resume r, Object index) {
+    protected void storageSave(Resume r, Integer index) {
         storage.add(r);
     }
 
     @Override
-    protected void storageUpdate(Resume r, Object index) {
-        storage.set((int)index, r);
+    protected void storageUpdate(Resume r, Integer index) {
+        storage.set(index, r);
     }
 
     @Override
-    protected void storageDelete(Object index) {
+    protected void storageDelete(Integer index) {
         storage.remove((int)index);
     }
 
     @Override
-    protected Resume storageGet(Object index) {
-        return storage.get((int)index);
+    protected Resume storageGet(Integer index) {
+        return storage.get(index);
     }
 
     protected Integer getIndex(String uuid){

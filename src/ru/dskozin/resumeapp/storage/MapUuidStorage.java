@@ -4,7 +4,7 @@ import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.*;
 
-public class MapUuidStorage extends AbstractStorage{
+public class MapUuidStorage extends AbstractStorage<String>{
 
     Map<String, Resume> storage = new HashMap<>();
 
@@ -26,22 +26,22 @@ public class MapUuidStorage extends AbstractStorage{
 
     //----методы абстрактного класса-------
     @Override
-    protected void storageSave(Resume r, Object index) {
+    protected void storageSave(Resume r, String index) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected void storageUpdate(Resume r, Object index) {
+    protected void storageUpdate(Resume r, String index) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected void storageDelete(Object index) {
+    protected void storageDelete(String index) {
         storage.remove(index);
     }
 
     @Override
-    protected Resume storageGet(Object index) {
+    protected Resume storageGet(String index) {
         return storage.get(index);
     }
 

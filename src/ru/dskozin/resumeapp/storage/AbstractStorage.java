@@ -7,19 +7,19 @@ import ru.dskozin.resumeapp.model.Resume;
 import java.util.Collections;
 import java.util.List;
 
-abstract public class AbstractStorage implements Storage {
+abstract public class AbstractStorage<T> implements Storage {
 
-    abstract void storageUpdate(Resume r, Object index);
-    abstract void storageDelete(Object index);
-    abstract Resume storageGet(Object index);
-    abstract Object getIndex(String uuid);
-    abstract void storageSave(Resume r, Object index);
+    abstract void storageUpdate(Resume r, T index);
+    abstract void storageDelete(T index);
+    abstract Resume storageGet(T index);
+    abstract T getIndex(String uuid);
+    abstract void storageSave(Resume r, T index);
     abstract List<Resume> getStorageAsList();
 
     @Override
     public void save(Resume r) {
         String uuid = r.getUuid();
-        Object index;
+        T index;
 
         if(found(index = getIndex(uuid)))
             throw new ExistStorageException(r.getUuid());
@@ -29,19 +29,19 @@ abstract public class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        Object index = notFoundOrKey(r.getUuid());
+        T index = notFoundOrKey(r.getUuid());
         storageUpdate(r, index);
     }
 
     @Override
     public void delete(String uuid) {
-        Object index = notFoundOrKey(uuid);
+        T index = notFoundOrKey(uuid);
         storageDelete(index);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object index = notFoundOrKey(uuid);
+        T index = notFoundOrKey(uuid);
         return storageGet(index);
     }
 
@@ -52,12 +52,12 @@ abstract public class AbstractStorage implements Storage {
         return list;
     }
 
-    boolean found(Object index){
+    boolean found(T index){
         return index != null;
     }
 
-    private Object notFoundOrKey(String uuid){
-        Object index;
+    private T notFoundOrKey(String uuid){
+        T index;
         if(!found(index = getIndex(uuid)))
             throw new NotExistStorageException(uuid);
 
