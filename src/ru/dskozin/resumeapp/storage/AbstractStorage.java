@@ -6,8 +6,11 @@ import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 abstract public class AbstractStorage<T> implements Storage {
+
+    private static final Logger LOGGER = Logger.getLogger(AbstractStorage.class.getName());
 
     abstract void storageUpdate(Resume r, T index);
     abstract void storageDelete(T index);
@@ -18,29 +21,35 @@ abstract public class AbstractStorage<T> implements Storage {
 
     @Override
     public void save(Resume r) {
+        LOGGER.info("Save " + r);
         String uuid = r.getUuid();
         T index;
 
-        if(found(index = getIndex(uuid)))
+        if(found(index = getIndex(uuid))){
+            LOGGER.warning("Resume " + uuid + " already exist");
             throw new ExistStorageException(r.getUuid());
+        }
 
         storageSave(r, index);
     }
 
     @Override
     public void update(Resume r) {
+        LOGGER.info("Update " + r);
         T index = notFoundOrKey(r.getUuid());
         storageUpdate(r, index);
     }
 
     @Override
     public void delete(String uuid) {
+        LOGGER.info("Delete " + uuid);
         T index = notFoundOrKey(uuid);
         storageDelete(index);
     }
 
     @Override
     public Resume get(String uuid) {
+        LOGGER.info("Get " + uuid);
         T index = notFoundOrKey(uuid);
         return storageGet(index);
     }
@@ -58,8 +67,10 @@ abstract public class AbstractStorage<T> implements Storage {
 
     private T notFoundOrKey(String uuid){
         T index;
-        if(!found(index = getIndex(uuid)))
+        if(!found(index = getIndex(uuid))){
+            LOGGER.warning("Resume " + uuid + " not exist");
             throw new NotExistStorageException(uuid);
+        }
 
         return index;
     }
