@@ -4,12 +4,11 @@ public class SectionString extends Section{
 
     private String content;
 
-    SectionString(){};
+    public SectionString(){};
 
-    SectionString(String content){
+    public SectionString(String content){
         this.content = content;
     }
-
 
     public String getContent() {
         return content;
@@ -17,5 +16,10 @@ public class SectionString extends Section{
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "- " + content + "\n";
     }
 }

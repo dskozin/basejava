@@ -8,16 +8,8 @@ public class Resume implements Comparable<Resume>{
     private final String uuid;
     private String fullName;
 
-    private final Map<ContactType, String> contacts = new HashMap<>();
-    private final Map<SectionType, Section> sections = new HashMap<>();
-    {
-        this.sections.put(SectionType.PERSONAL, new SectionString());
-        this.sections.put(SectionType.OBJECTIVE, new SectionString());
-        this.sections.put(SectionType.ACHIEVEMENT, new SectionList<String>());
-        this.sections.put(SectionType.QUALIFICATION, new SectionList<String>());
-        this.sections.put(SectionType.EXPERIENCE, new SectionList<PeriodicEntry>());
-        this.sections.put(SectionType.EDUCATION, new SectionList<PeriodicEntry>());
-    }
+    public final Map<ContactType, String> contacts = new HashMap<>();
+    public final Map<SectionType, Section> sections = new HashMap<>();
 
     public Resume(String fullName) {
         this(fullName, UUID.randomUUID().toString());
@@ -38,22 +30,6 @@ public class Resume implements Comparable<Resume>{
         return fullName;
     }
 
-
-    //Добавление и получение контактов через объект резюме.
-    public String getContactData(ContactType type){
-        return contacts.get(type);
-    }
-
-    public List<String> getContacts(){
-        List<String> contactList = new ArrayList<>();
-        contactList.addAll(contacts.values());
-        return contactList;
-    }
-
-    public void addContact(ContactType type, String data){
-        contacts.put(type,data);
-    }
-    // --------- конец секции контактов.
 
     @Override
     public boolean equals(Object o) {
@@ -82,6 +58,32 @@ public class Resume implements Comparable<Resume>{
     @Override
     public String toString() {
         return uuid + "(" + fullName + ")";
+    }
+
+    public String fullResume(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(fullName).append("\n");
+        for (ContactType ct : ContactType.values()){
+            if (sections.get(ct) == null)
+                continue;
+
+            stringBuilder.append(ct.getTitle())
+                    .append(": ")
+                    .append(contacts.get(ct))
+                    .append("\n");
+        }
+        stringBuilder.append("\n");
+        for (SectionType st : SectionType.values()){
+            if (sections.get(st) == null)
+                continue;
+
+            stringBuilder.append(st.getTitle())
+                    .append("\n")
+                    .append(sections.get(st).toString())
+                    .append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 
 }

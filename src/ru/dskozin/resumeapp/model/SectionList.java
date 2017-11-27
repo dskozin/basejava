@@ -5,12 +5,16 @@ import java.util.List;
 
 public class SectionList<T> extends Section{
 
-    final List<T> dataList = new ArrayList<>();
+    //его можно открыть, он финальный
+    public final List<T> dataList = new ArrayList<>();
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (T entry : dataList){
+            if (entry instanceof String)
+                stringBuilder.append("- ");
+
             stringBuilder.append(entry.toString()).append("\n");
         }
 
