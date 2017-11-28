@@ -13,12 +13,12 @@ public class MainResumeObject {
 
         //накидываем в него контакты
         //переменная contacts финальная, так что ее можно не прятать
-        resume.contacts.put(ContactType.EMAIL, "dskozin@mail.ru");
-        resume.contacts.put(ContactType.FACEBOOK, "http://facebook.com/dskozin");
-        resume.contacts.put(ContactType.LINKEDIN, "http://linkedin.com/dskozin");
-        resume.contacts.put(ContactType.MOBILE_PHONE, "+7 967 099 00 69");
-        resume.contacts.put(ContactType.SKYPE, "dskozin@mail.ru");
-        resume.contacts.put(ContactType.STACKOVERFLOW, "Нету");
+        resume.getContacts().put(ContactType.EMAIL, "dskozin@mail.ru");
+        resume.getContacts().put(ContactType.FACEBOOK, "http://facebook.com/dskozin");
+        resume.getContacts().put(ContactType.LINKEDIN, "http://linkedin.com/dskozin");
+        resume.getContacts().put(ContactType.MOBILE_PHONE, "+7 967 099 00 69");
+        resume.getContacts().put(ContactType.SKYPE, "dskozin@mail.ru");
+        resume.getContacts().put(ContactType.STACKOVERFLOW, "Нету");
 
         //создаем секцию позиция
         SectionString position = new SectionString("Middle Java Developer - разработчик корпоративного ПО");
@@ -77,11 +77,11 @@ public class MainResumeObject {
                 "Общая психология"));
 
         //кладем все секции в объект резюме
-        resume.sections.put(SectionType.ACHIEVEMENT, achievement);
-        resume.sections.put(SectionType.QUALIFICATION, qualification);
-        resume.sections.put(SectionType.EXPERIENCE, experience);
-        resume.sections.put(SectionType.EDUCATION, education);
-        resume.sections.put(SectionType.OBJECTIVE, position);
+        resume.getSections().put(SectionType.ACHIEVEMENT, achievement);
+        resume.getSections().put(SectionType.QUALIFICATION, qualification);
+        resume.getSections().put(SectionType.EXPERIENCE, experience);
+        resume.getSections().put(SectionType.EDUCATION, education);
+        resume.getSections().put(SectionType.OBJECTIVE, position);
 
         //выводим резюме на экран
         System.out.println(resume.fullResume());

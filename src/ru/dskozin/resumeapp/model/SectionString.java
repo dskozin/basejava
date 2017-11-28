@@ -1,12 +1,13 @@
 package ru.dskozin.resumeapp.model;
 
+import java.util.Objects;
+
 public class SectionString extends Section{
 
     private String content;
 
-    public SectionString(){};
-
     public SectionString(String content){
+        Objects.requireNonNull(content, " content must not be null");
         this.content = content;
     }
 

@@ -8,8 +8,8 @@ public class Resume implements Comparable<Resume>{
     private final String uuid;
     private String fullName;
 
-    public final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    public final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(fullName, UUID.randomUUID().toString());
@@ -30,6 +30,21 @@ public class Resume implements Comparable<Resume>{
         return fullName;
     }
 
+    public String getContact(ContactType type){
+        return contacts.get(type);
+    }
+
+    public Section getSection(SectionType type){
+        return sections.get(type);
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
 
     @Override
     public boolean equals(Object o) {
