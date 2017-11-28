@@ -8,8 +8,8 @@ public class Resume implements Comparable<Resume>{
     private final String uuid;
     private String fullName;
 
-    public final Map<ContactType, String> contacts = new HashMap<>();
-    public final Map<SectionType, Section> sections = new HashMap<>();
+    public final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    public final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(fullName, UUID.randomUUID().toString());

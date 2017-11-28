@@ -1,17 +1,16 @@
 package ru.dskozin.resumeapp.model;
 
-import java.text.DateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class PeriodicEntry {
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String title;
     private String header;
     private String content;
 
     //для создания записей без контента (Образование)
-    public PeriodicEntry(String title, Date startDate, Date endDate, String header){
+    public PeriodicEntry(String title, LocalDate startDate, LocalDate endDate, String header){
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -19,7 +18,7 @@ public class PeriodicEntry {
     }
 
     //Для создания записей с контентом (Опыт работы)
-    public PeriodicEntry(String title, Date startDate, Date endDate, String header, String content){
+    public PeriodicEntry(String title, LocalDate startDate, LocalDate endDate, String header, String content){
         this(title,startDate,endDate,header);
         this.content = content;
     }

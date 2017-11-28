@@ -2,6 +2,7 @@ package ru.dskozin.resumeapp;
 
 import ru.dskozin.resumeapp.model.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class MainResumeObject {
@@ -38,22 +39,22 @@ public class MainResumeObject {
         SectionList<PeriodicEntry> experience = new SectionList<>();
         experience.dataList.add(new PeriodicEntry(
                 "ООО \"Виалек\"",
-                new Date(2015, 5, 15),
+                LocalDate.of(2015, 5, 15),
                 null,
                 "Начальник ИТ отдела",
                 "Руководил разработкой программного обеспечения компании в частности продуктом для управления регистрационным досье"));
 
         experience.dataList.add(new PeriodicEntry(
                 "ООО \"Данцер\"",
-                new Date(2016, 12, 12),
-                new Date(2017, 6, 13),
+                LocalDate.of(2016, 12, 12),
+                LocalDate.of(2017, 6, 13),
                 "Разработчик РНР",
                 "Разработка модели бизнес-процессов для системы упраления жизнью"));
 
         experience.dataList.add(new PeriodicEntry(
                 "ООО \"АйТи\"",
-                new Date(2016, 9, 15),
-                new Date(2017, 12, 10),
+                LocalDate.of(2016, 9, 15),
+                LocalDate.of(2017, 12, 10),
                 "Бизнес-архитектор",
                 "Аналитика процессов для внедрения ситем на базе платформы Terra-Soft"));
 
@@ -61,18 +62,18 @@ public class MainResumeObject {
         SectionList<PeriodicEntry> education = new SectionList<>();
         education.dataList.add(new PeriodicEntry(
                 "Московский Государственный Университет Приборостроения и Информатики",
-                new Date(2007, 9, 1),
-                new Date(2013, 6, 10),
+                LocalDate.of(2007, 9, 1),
+                LocalDate.of(2013, 6, 10),
                 "Приборостроение"));
         education.dataList.add(new PeriodicEntry(
                 "Школа бизнеса МИРБИС",
-                new Date(2013, 9, 1),
-                new Date(2014, 6, 10),
+                LocalDate.of(2013, 9, 1),
+                LocalDate.of(2014, 6, 10),
                 "Корпоративные финансы"));
         education.dataList.add(new PeriodicEntry(
                 "Московский Государственный Гуманитарный Университет",
-                new Date(2014, 9, 1),
-                new Date(2016, 6, 10),
+                LocalDate.of(2014, 9, 1),
+                LocalDate.of(2016, 6, 10),
                 "Общая психология"));
 
         //кладем все секции в объект резюме
