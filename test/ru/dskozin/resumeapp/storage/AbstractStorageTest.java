@@ -28,8 +28,8 @@ public abstract class AbstractStorageTest {
     //перед каждым тестом мы наполняем стораж
     @Before
     public void setUp() throws Exception {
-        storage.save(new Resume(NAME_1, UUID_1));
-        storage.save(new Resume(NAME_2, UUID_2));
+        storage.save(ResumeData.getResume(NAME_1, UUID_1));
+        storage.save(ResumeData.getResume(NAME_2, UUID_2));
     }
 
     //после теста очищаем сторадж
@@ -50,7 +50,7 @@ public abstract class AbstractStorageTest {
     public void save() throws Exception{
 
         int size = storage.size();
-        Resume resume = new Resume(NAME_3, UUID_3);
+        Resume resume = ResumeData.getResume(NAME_3, UUID_3);
         storage.save(resume);
 
         //элемент должен находиться в сторадже
@@ -63,13 +63,13 @@ public abstract class AbstractStorageTest {
     //проверка сохранения, если элемент уже есть
     @Test(expected = ExistStorageException.class)
     public void saveExist() throws Exception {
-        storage.save(new Resume(NAME_1, UUID_1));
+        storage.save(ResumeData.getResume(NAME_1, UUID_1));
     }
 
     //проверка на обновление стоража
     @Test
     public void update() throws Exception {
-        Resume resume = new Resume(NAME_3, UUID_2);
+        Resume resume = ResumeData.getResume(NAME_3, UUID_2);
 
         //устанавливаем новое значение элемента
         storage.update(resume);
@@ -81,7 +81,7 @@ public abstract class AbstractStorageTest {
     //проверка попытки обновления при несуществующем элементе
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() throws Exception {
-        Resume resume = new Resume(NAME_3, UUID_3);
+        Resume resume = ResumeData.getResume(NAME_3, UUID_3);
         storage.update(resume);
     }
 
@@ -127,14 +127,14 @@ public abstract class AbstractStorageTest {
         assertTrue((arr = storage.getAllSorted()).size() == 2);
 
         //там лежат объекты с UUID_1 и UUID_2
-        assertTrue(arr.containsAll(Arrays.asList(new Resume(NAME_1, UUID_1), new Resume(NAME_2, UUID_2))));
+        assertTrue(arr.containsAll(Arrays.asList(ResumeData.getResume(NAME_1, UUID_1), ResumeData.getResume(NAME_2, UUID_2))));
     }
 
     //проверка получения конкретного элемента
     @Test
     public void get() throws Exception {
-        assertEquals(storage.get(UUID_1), new Resume(NAME_1, UUID_1));
-        assertEquals(storage.get(UUID_2), new Resume(NAME_2, UUID_2));
+        assertEquals(storage.get(UUID_1), ResumeData.getResume(NAME_1, UUID_1));
+        assertEquals(storage.get(UUID_2), ResumeData.getResume(NAME_2, UUID_2));
     }
 
     //проверка получения конкретного элемента если он не существует
@@ -147,7 +147,7 @@ public abstract class AbstractStorageTest {
     //Поле получения значения должны идти UUID_2, потом UUID_1
     @Test
     public void getAllSorted() throws Exception {
-        assertArrayEquals(new Resume[]{new Resume(NAME_2, UUID_2), new Resume(NAME_1, UUID_1)},
+        assertArrayEquals(new Resume[]{ResumeData.getResume(NAME_2, UUID_2), ResumeData.getResume(NAME_1, UUID_1)},
                 storage.getAllSorted().toArray(new Resume[storage.size()]));
     }
 }

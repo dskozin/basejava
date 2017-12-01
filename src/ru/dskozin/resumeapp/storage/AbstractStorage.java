@@ -21,7 +21,6 @@ abstract public class AbstractStorage<T> implements Storage {
 
     @Override
     public void save(Resume r) {
-        LOGGER.info("Save " + r);
         String uuid = r.getUuid();
         T index;
 
@@ -35,21 +34,18 @@ abstract public class AbstractStorage<T> implements Storage {
 
     @Override
     public void update(Resume r) {
-        LOGGER.info("Update " + r);
         T index = notFoundOrKey(r.getUuid());
         storageUpdate(r, index);
     }
 
     @Override
     public void delete(String uuid) {
-        LOGGER.info("Delete " + uuid);
         T index = notFoundOrKey(uuid);
         storageDelete(index);
     }
 
     @Override
     public Resume get(String uuid) {
-        LOGGER.info("Get " + uuid);
         T index = notFoundOrKey(uuid);
         return storageGet(index);
     }

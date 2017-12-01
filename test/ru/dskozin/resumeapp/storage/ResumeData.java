@@ -1,15 +1,13 @@
-package ru.dskozin.resumeapp;
+package ru.dskozin.resumeapp.storage;
 
 import ru.dskozin.resumeapp.model.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-public class MainResumeObject {
-    public static void main(String[] args) {
-        
+public class ResumeData {
+    public static Resume getResume(String name, String uuid){
         //создаем объект резюме
-        Resume resume = new Resume("Дмитрий Козин", "uuid1");
+        Resume resume = new Resume(name, uuid);
 
         //накидываем в него контакты
         //переменная contacts финальная, так что ее можно не прятать
@@ -54,39 +52,39 @@ public class MainResumeObject {
         experience.dataList.add(new OrganizationBlock(
                 "ООО \"Данцер\"",
                 new PeriodicEntry(
-                LocalDate.of(2016, 12, 12),
-                LocalDate.of(2017, 6, 13),
-                "Разработчик РНР",
-                "Разработка модели бизнес-процессов для системы упраления жизнью")));
+                        LocalDate.of(2016, 12, 12),
+                        LocalDate.of(2017, 6, 13),
+                        "Разработчик РНР",
+                        "Разработка модели бизнес-процессов для системы упраления жизнью")));
 
         experience.dataList.add(new OrganizationBlock(
                 "ООО \"АйТи\"",
                 new PeriodicEntry(
-                LocalDate.of(2016, 9, 15),
-                LocalDate.of(2017, 12, 10),
-                "Бизнес-архитектор",
-                "Аналитика процессов для внедрения ситем на базе платформы Terra-Soft")));
+                        LocalDate.of(2016, 9, 15),
+                        LocalDate.of(2017, 12, 10),
+                        "Бизнес-архитектор",
+                        "Аналитика процессов для внедрения ситем на базе платформы Terra-Soft")));
 
         //образование
         SectionList<OrganizationBlock> education = new SectionList<>();
         education.dataList.add(new OrganizationBlock(
                 "Московский Государственный Университет Приборостроения и Информатики",
                 new PeriodicEntry(
-                LocalDate.of(2007, 9, 1),
-                LocalDate.of(2013, 6, 10),
-                "Приборостроение")));
+                        LocalDate.of(2007, 9, 1),
+                        LocalDate.of(2013, 6, 10),
+                        "Приборостроение")));
         education.dataList.add(new OrganizationBlock(
                 "Школа бизнеса МИРБИС",
                 new PeriodicEntry(
-                LocalDate.of(2013, 9, 1),
-                LocalDate.of(2014, 6, 10),
-                "Корпоративные финансы")));
+                        LocalDate.of(2013, 9, 1),
+                        LocalDate.of(2014, 6, 10),
+                        "Корпоративные финансы")));
         education.dataList.add(new OrganizationBlock(
                 "Московский Государственный Гуманитарный Университет",
                 new PeriodicEntry(
-                LocalDate.of(2014, 9, 1),
-                LocalDate.of(2016, 6, 10),
-                "Общая психология")));
+                        LocalDate.of(2014, 9, 1),
+                        LocalDate.of(2016, 6, 10),
+                        "Общая психология")));
 
         //кладем все секции в объект резюме
         resume.getSections().put(SectionType.ACHIEVEMENT, achievement);
@@ -96,7 +94,6 @@ public class MainResumeObject {
         resume.getSections().put(SectionType.OBJECTIVE, position);
 
         //выводим резюме на экран
-        System.out.println(resume.fullResume());
-        
+        return resume;
     }
 }
