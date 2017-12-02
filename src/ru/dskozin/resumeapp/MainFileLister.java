@@ -12,11 +12,16 @@ public class MainFileLister {
 
     private static void fileRecursion(File file){
         if (file.isDirectory()){
+
             //отбрасываем скрытые файлы
             if (file.isHidden())
                 return;
 
-            for (File f : file.listFiles()){
+            File[] arr;
+            if ((arr = file.listFiles()) == null)
+                throw new RuntimeException();
+
+            for (File f : arr){
                 if (f != null)
                     fileRecursion(f);
             }

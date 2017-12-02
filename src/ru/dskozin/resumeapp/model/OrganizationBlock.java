@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrganizationBlock {
     private final String name;
-    private final ArrayList<PeriodicEntry> entries = new ArrayList<>();
+    private final List<PeriodicEntry> entries = new ArrayList<>();
 
     public OrganizationBlock(String name){
         this.name = name;

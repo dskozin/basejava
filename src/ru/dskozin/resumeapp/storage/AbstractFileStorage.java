@@ -5,12 +5,17 @@ import ru.dskozin.resumeapp.model.Resume;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     private final File storage;
+
+    abstract void doWrite(Resume r, File file);
+    abstract Resume doRead(File file);
+
 
     public AbstractFileStorage(String directory) {
         Objects.requireNonNull(directory, "Directory can not be null");
@@ -26,7 +31,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     @Override
     void storageUpdate(Resume r, File file) {
-        storageDelete(file);
         storageSave(r, file);
     }
 
@@ -38,9 +42,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
 
     @Override
     Resume storageGet(File file) {
-        Resume resume;
-        //следующий урок
-        return null;
+        return doRead(file);
     }
 
     @Override
@@ -58,21 +60,37 @@ public abstract class AbstractFileStorage extends AbstractStorage<File>{
         }
     }
 
-    protected abstract void doWrite(Resume r, File file);
-
     @Override
     List<Resume> getStorageAsList() {
-        return null;
+        List<Resume> list = new ArrayList<>();
+        for (File f : fileList()){
+            list.add(doRead(f));
+        }
+
+        return list;
     }
 
     @Override
     public void clear() {
-        for(File f : storage.listFiles()) f.delete();
+        File[] arr = fileList();
+
+        for(File f : arr) {
+            storageDelete(f);
+        }
     }
 
     @Override
     public int size() {
-        return storage.listFiles().length;
+        return fileList().length;
+    }
+
+    private File[] fileList(){
+        File[] arr = storage.listFiles();
+
+        if (arr == null)
+            throw new StorageException("Storage directory list error", "none");
+
+        return arr;
     }
 
     boolean found(File index){
