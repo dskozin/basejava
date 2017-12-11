@@ -1,9 +1,7 @@
 package ru.dskozin.resumeapp.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 public class OrganizationBlock {
     private final String name;
@@ -20,7 +18,7 @@ public class OrganizationBlock {
 
     public OrganizationBlock(String name, List<PeriodicEntry> list){
         this(name);
-        Collections.addAll(list);
+        entries.addAll(list);
     }
 
     @Override
@@ -35,5 +33,49 @@ public class OrganizationBlock {
         }
 
         return stringBuilder.toString();
+    }
+
+    public static class PeriodicEntry {
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String header;
+        private String content;
+
+        //для создания записей без контента (Образование)
+        public PeriodicEntry(LocalDate startDate, LocalDate endDate, String header){
+            Objects.requireNonNull(startDate, " startDate must not be null");
+            Objects.requireNonNull(header, " header must not be null");
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.header = header;
+        }
+
+        //Для создания записей с контентом (Опыт работы)
+        public PeriodicEntry(LocalDate startDate, LocalDate endDate, String header, String content){
+            this(startDate,endDate,header);
+            this.content = content;
+        }
+
+        //Для создания записей с отсутствующей датой окончания
+        public PeriodicEntry(LocalDate startDate, String header, String content){
+            this(startDate,LocalDate.MAX,header);
+            this.content = content;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder
+                    .append(startDate)
+                    .append(" - ")
+                    .append(endDate == null ? "Сейчас" : endDate)
+                    .append("    ")
+                    .append(header);
+            if (content != null)
+                    stringBuilder.append("\n").append(content);
+
+            return stringBuilder.toString();
+        }
     }
 }
