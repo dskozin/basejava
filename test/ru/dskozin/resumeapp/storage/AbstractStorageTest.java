@@ -25,6 +25,8 @@ public abstract class AbstractStorageTest {
     static final String UUID_3 = "uuid3";
     static final String NAME_3 = "ELena Khrapova";
 
+    protected static final String STORAGE_DIR = "./storage";
+
     //перед каждым тестом мы наполняем стораж
     @Before
     public void setUp() throws Exception {

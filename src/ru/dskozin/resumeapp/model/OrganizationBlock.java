@@ -1,9 +1,12 @@
 package ru.dskozin.resumeapp.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
-public class OrganizationBlock {
+public class OrganizationBlock implements Serializable{
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final List<PeriodicEntry> entries = new ArrayList<>();
 
@@ -35,7 +38,8 @@ public class OrganizationBlock {
         return stringBuilder.toString();
     }
 
-    public static class PeriodicEntry {
+    public static class PeriodicEntry implements Serializable{
+        private static final long serialVersionUID = 1L;
         private LocalDate startDate;
         private LocalDate endDate;
         private String header;

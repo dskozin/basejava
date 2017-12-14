@@ -6,6 +6,8 @@ import java.util.List;
 
 public class SectionList<T> extends Section{
 
+    private static final long serialVersionUID = 1L;
+
     //его можно открыть, он финальный
     private final List<T> dataList = new ArrayList<>();
 

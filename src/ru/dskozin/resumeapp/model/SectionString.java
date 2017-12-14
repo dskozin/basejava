@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class SectionString extends Section{
 
+    private static final long serialVersionUID = 1L;
+
     private String content;
 
     public SectionString(String content){
