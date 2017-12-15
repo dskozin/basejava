@@ -4,6 +4,8 @@ import java.io.File;
 
 public class MainFileLister {
 
+    private static StringBuilder sb = new StringBuilder("");
+
     public static void main(String[] args) {
         File startPoint = new File(".");
         fileRecursion(startPoint);
@@ -17,6 +19,9 @@ public class MainFileLister {
             if (file.isHidden())
                 return;
 
+            System.out.println(sb.toString() + file.getName());
+            sb.append("  ");
+
             File[] arr;
             if ((arr = file.listFiles()) == null)
                 throw new RuntimeException();
@@ -26,8 +31,11 @@ public class MainFileLister {
                     fileRecursion(f);
             }
 
-        } else { //имена директорий не выводим, только файлов.
-            System.out.println(file.getName());
+            sb.delete(0, 2);
+
+        } else {
+            //раскоментировать если хотим так же файлы
+            //System.out.println(sb.toString() + file.getName());
         }
     }
 }

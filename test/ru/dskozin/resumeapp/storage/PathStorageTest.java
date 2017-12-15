@@ -2,11 +2,11 @@ package ru.dskozin.resumeapp.storage;
 
 import org.junit.BeforeClass;
 
-public class ObjectStorageTest extends AbstractStorageTest{
+public class PathStorageTest extends AbstractStorageTest{
 
     @BeforeClass
     public static void init(){
         //инициализовать сторадж
-        storage = new ObjectStreamStorage(STORAGE_DIR);
+        storage = new PathStorage(STORAGE_DIR, new ObjectSerialization());
     }
 }

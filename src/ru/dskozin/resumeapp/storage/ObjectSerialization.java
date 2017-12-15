@@ -5,21 +5,17 @@ import ru.dskozin.resumeapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-
-    public ObjectStreamStorage(String directory) {
-        super(directory);
-    }
+public class ObjectSerialization implements SerializationStrategy {
 
     @Override
-    void doWrite(Resume r, OutputStream out) throws IOException {
+    public void doWrite(Resume r, OutputStream out) throws IOException {
         try(ObjectOutputStream oos = new ObjectOutputStream(out)){
             oos.writeObject(r);
         }
     }
 
     @Override
-    Resume doRead(InputStream in) throws IOException {
+    public Resume doRead(InputStream in) throws IOException {
         try(ObjectInputStream ois = new ObjectInputStream(in)){
             return (Resume)ois.readObject();
         } catch (ClassNotFoundException e){
