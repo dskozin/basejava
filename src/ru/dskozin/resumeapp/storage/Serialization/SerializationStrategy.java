@@ -1,4 +1,4 @@
-package ru.dskozin.resumeapp.storage;
+package ru.dskozin.resumeapp.storage.Serialization;
 
 import ru.dskozin.resumeapp.model.Resume;
 

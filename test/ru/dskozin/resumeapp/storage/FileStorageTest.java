@@ -1,6 +1,7 @@
 package ru.dskozin.resumeapp.storage;
 
 import org.junit.BeforeClass;
+import ru.dskozin.resumeapp.storage.Serialization.ObjectSerialization;
 
 public class FileStorageTest extends AbstractStorageTest{
 
