@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path>{
@@ -58,7 +59,7 @@ public class PathStorage extends AbstractStorage<Path>{
     @Override
     Resume storageGet(Path file) {
         try {
-            return strategy.doRead(Files.newInputStream(file));
+            return strategy.doRead(new BufferedInputStream(Files.newInputStream(file)));
         } catch (IOException e){
             throw new StorageException("File read error", file.getFileName().toString(), e);
         }
@@ -82,18 +83,12 @@ public class PathStorage extends AbstractStorage<Path>{
 
     @Override
     List<Resume> getStorageAsList() {
-        List<Resume> list = new ArrayList<>();
-        fileList().forEach(file -> list.add(storageGet(file)));
-        return list;
+        return fileList().map(this::storageGet).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
-        try {
-            Files.list(storage).forEach(this::storageDelete);
-        } catch (IOException e){
-            throw new StorageException("Clear error (list error)", "none", e);
-        }
+        fileList().forEach(this::storageDelete);
     }
 
     @Override
@@ -110,6 +105,6 @@ public class PathStorage extends AbstractStorage<Path>{
     }
 
     boolean found(Path index){
-        return Files.exists(index);
+        return Files.isRegularFile(index);
     }
 }
