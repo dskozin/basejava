@@ -57,7 +57,11 @@ public class PathStorage extends AbstractStorage<Path>{
 
     @Override
     Resume storageGet(Path file) {
-        return readFile(file);
+        try {
+            return strategy.doRead(Files.newInputStream(file));
+        } catch (IOException e){
+            throw new StorageException("File read error", file.getFileName().toString(), e);
+        }
     }
 
     @Override
@@ -79,7 +83,7 @@ public class PathStorage extends AbstractStorage<Path>{
     @Override
     List<Resume> getStorageAsList() {
         List<Resume> list = new ArrayList<>();
-        fileList().forEach(file -> list.add(readFile(file)));
+        fileList().forEach(file -> list.add(storageGet(file)));
         return list;
     }
 
@@ -107,13 +111,5 @@ public class PathStorage extends AbstractStorage<Path>{
 
     boolean found(Path index){
         return Files.exists(index);
-    }
-
-    private Resume readFile(Path file){
-        try {
-            return strategy.doRead(Files.newInputStream(file));
-        } catch (IOException e){
-            throw new StorageException("File read error", file.getFileName().toString(), e);
-        }
     }
 }

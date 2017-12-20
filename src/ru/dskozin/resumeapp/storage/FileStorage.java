@@ -51,7 +51,11 @@ public class FileStorage extends AbstractStorage<File>{
 
     @Override
     Resume storageGet(File file) {
-        return readFile(file);
+        try {
+            return strategy.doRead(new BufferedInputStream(new FileInputStream(file)));
+        } catch (IOException e){
+            throw new StorageException("File read error", file.getName(), e);
+        }
     }
 
     @Override
@@ -74,7 +78,7 @@ public class FileStorage extends AbstractStorage<File>{
     List<Resume> getStorageAsList() {
         List<Resume> list = new ArrayList<>();
         for (File f : fileList()){
-            list.add(readFile(f));
+            list.add(storageGet(f));
         }
 
         return list;
@@ -103,13 +107,5 @@ public class FileStorage extends AbstractStorage<File>{
 
     boolean found(File index){
         return index.exists();
-    }
-
-    private Resume readFile(File file){
-        try {
-            return strategy.doRead(new BufferedInputStream(new FileInputStream(file)));
-        } catch (IOException e){
-            throw new StorageException("File read error", file.getName(), e);
-        }
     }
 }
