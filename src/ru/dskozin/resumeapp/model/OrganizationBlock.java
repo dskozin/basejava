@@ -1,14 +1,22 @@
 package ru.dskozin.resumeapp.model;
 
+import ru.dskozin.resumeapp.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrganizationBlock implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    private final String name;
-    private final List<PeriodicEntry> entries = new ArrayList<>();
+    private String name;
+    private List<PeriodicEntry> entries = new ArrayList<>();
+
+    public OrganizationBlock(){};
 
     public OrganizationBlock(String name){
         this.name = name;
@@ -38,10 +46,31 @@ public class OrganizationBlock implements Serializable{
         return stringBuilder.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationBlock that = (OrganizationBlock) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(entries, that.entries);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, entries);
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class PeriodicEntry implements Serializable{
+
         private static final long serialVersionUID = 1L;
+
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate startDate;
+
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate endDate;
+
         private String header;
         private String content;
 
@@ -66,20 +95,22 @@ public class OrganizationBlock implements Serializable{
             this.content = content;
         }
 
+        public PeriodicEntry(){}
+
         @Override
-        public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PeriodicEntry that = (PeriodicEntry) o;
+            return Objects.equals(startDate, that.startDate) &&
+                    Objects.equals(endDate, that.endDate) &&
+                    Objects.equals(header, that.header) &&
+                    Objects.equals(content, that.content);
+        }
 
-            stringBuilder
-                    .append(startDate)
-                    .append(" - ")
-                    .append(endDate == null ? "Сейчас" : endDate)
-                    .append("    ")
-                    .append(header);
-            if (content != null)
-                    stringBuilder.append("\n").append(content);
-
-            return stringBuilder.toString();
+        @Override
+        public int hashCode() {
+            return Objects.hash(startDate, endDate, header, content);
         }
     }
 }
