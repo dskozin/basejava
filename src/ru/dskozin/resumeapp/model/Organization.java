@@ -10,26 +10,37 @@ import java.time.LocalDate;
 import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OrganizationBlock implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class Organization implements Serializable{
 
     private String name;
-    private List<PeriodicEntry> entries = new ArrayList<>();
 
-    public OrganizationBlock(){};
+    private List<PeriodicEntry> entries;
 
-    public OrganizationBlock(String name){
+    public Organization(){}
+
+    public Organization(String name) {
         this.name = name;
     }
 
-    public OrganizationBlock(String name, PeriodicEntry... incomeEntries){
+    public Organization(String name, List<PeriodicEntry> entries) {
         this(name);
-        Collections.addAll(entries, incomeEntries);
+        this.entries = entries;
     }
 
-    public OrganizationBlock(String name, List<PeriodicEntry> list){
-        this(name);
-        entries.addAll(list);
+    public Organization(String name, PeriodicEntry... entries){
+        this(name, Arrays.asList(entries));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<PeriodicEntry> getEntries() {
+        return entries;
+    }
+
+    public void add(PeriodicEntry entry){
+        entries.add(entry);
     }
 
     @Override
@@ -50,7 +61,7 @@ public class OrganizationBlock implements Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrganizationBlock that = (OrganizationBlock) o;
+        Organization that = (Organization) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(entries, that.entries);
     }
@@ -61,7 +72,7 @@ public class OrganizationBlock implements Serializable{
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class PeriodicEntry implements Serializable{
+    public static class PeriodicEntry implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
@@ -96,6 +107,22 @@ public class OrganizationBlock implements Serializable{
         }
 
         public PeriodicEntry(){}
+
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getContent() {
+            return content;
+        }
 
         @Override
         public boolean equals(Object o) {

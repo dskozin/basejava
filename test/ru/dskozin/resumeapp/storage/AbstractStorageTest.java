@@ -135,8 +135,8 @@ public abstract class AbstractStorageTest {
     //проверка получения конкретного элемента
     @Test
     public void get() throws Exception {
-        assertEquals(storage.get(UUID_1), ResumeData.getResume(NAME_1, UUID_1));
-        assertEquals(storage.get(UUID_2), ResumeData.getResume(NAME_2, UUID_2));
+        assertEquals(ResumeData.getResume(NAME_1, UUID_1), storage.get(UUID_1));
+        assertEquals(ResumeData.getResume(NAME_2, UUID_2), storage.get(UUID_2));
     }
 
     //проверка получения конкретного элемента если он не существует

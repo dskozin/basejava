@@ -23,67 +23,69 @@ public class MainResumeObject {
         SectionString position = new SectionString("Middle Java Developer - разработчик корпоративного ПО");
 
         //создаем секцию достижений
-        SectionList<String> achievement = new SectionList<>("Курс подготовки BaseJava",
-                "Разработка приложения для формирования базы резюме",
-                "Курс JavaRush");
+        SectionList achievement = new SectionList();
+        achievement.add("Курс подготовки BaseJava");
+        achievement.add("Разработка приложения для формирования базы резюме");
+        achievement.add("Кур JavaRush");
 
         //квалификация
-        SectionList<String> qualification = new SectionList<>("Java 8 Core",
-                "Spring Boot, Spring WebFlow",
-                "HTML, CSS");
+        SectionList qualification = new SectionList();
+        qualification.add("Java 8 Core");
+        qualification.add("Spring Boot, Spring WebFlow");
+        qualification.add("HTML, CSS");
 
         //опыт работы
-        SectionList<OrganizationBlock> experience = new SectionList<>();
-        experience.add(new OrganizationBlock(
+        OrganizationSection experience = new OrganizationSection();
+        experience.add(new Organization(
                 "ООО \"Виалек\"",
-                new OrganizationBlock.PeriodicEntry(
+                new Organization.PeriodicEntry(
                         LocalDate.of(2015, 5, 15),
-                        null,
                         "Начальник ИТ отдела",
                         "Руководил разработкой программного обеспечения компании в частности продуктом для управления регистрационным досье"),
-                new OrganizationBlock.PeriodicEntry(
+                new Organization.PeriodicEntry(
                         LocalDate.of(2014, 6, 15),
                         LocalDate.of(2015, 5, 15),
                         "Заместитель начальника",
                         "Руководил всеми аспектами разработки программного обеспечения"
                 )));
 
-        experience.add(new OrganizationBlock(
+        experience.add(new Organization(
                 "ООО \"Данцер\"",
-                new OrganizationBlock.PeriodicEntry(
-                LocalDate.of(2016, 12, 12),
-                LocalDate.of(2017, 6, 13),
-                "Разработчик РНР",
-                "Разработка модели бизнес-процессов для системы упраления жизнью")));
+                new Organization.PeriodicEntry(
+                        LocalDate.of(2016, 12, 12),
+                        LocalDate.of(2017, 6, 13),
+                        "Разработчик РНР",
+                        "Разработка модели бизнес-процессов для системы упраления жизнью"
+                )));
 
-        experience.add(new OrganizationBlock(
+        experience.add(new Organization(
                 "ООО \"АйТи\"",
-                new OrganizationBlock.PeriodicEntry(
-                LocalDate.of(2016, 9, 15),
-                LocalDate.of(2017, 12, 10),
-                "Бизнес-архитектор",
-                "Аналитика процессов для внедрения ситем на базе платформы Terra-Soft")));
+                new Organization.PeriodicEntry(
+                        LocalDate.of(2016, 9, 15),
+                        LocalDate.of(2017, 12, 10),
+                        "Бизнес-архитектор",
+                        "Аналитика процессов для внедрения ситем на базе платформы Terra-Soft")));
 
         //образование
-        SectionList<OrganizationBlock> education = new SectionList<>();
-        education.add(new OrganizationBlock(
+        OrganizationSection education = new OrganizationSection();
+        education.add(new Organization(
                 "Московский Государственный Университет Приборостроения и Информатики",
-                new OrganizationBlock.PeriodicEntry(
-                LocalDate.of(2007, 9, 1),
-                LocalDate.of(2013, 6, 10),
-                "Приборостроение")));
-        education.add(new OrganizationBlock(
+                new Organization.PeriodicEntry(
+                        LocalDate.of(2007, 9, 1),
+                        LocalDate.of(2013, 6, 10),
+                        "Приборостроение")));
+        education.add(new Organization(
                 "Школа бизнеса МИРБИС",
-                new OrganizationBlock.PeriodicEntry(
-                LocalDate.of(2013, 9, 1),
-                LocalDate.of(2014, 6, 10),
-                "Корпоративные финансы")));
-        education.add(new OrganizationBlock(
+                new Organization.PeriodicEntry(
+                        LocalDate.of(2013, 9, 1),
+                        LocalDate.of(2014, 6, 10),
+                        "Корпоративные финансы")));
+        education.add(new Organization(
                 "Московский Государственный Гуманитарный Университет",
-                new OrganizationBlock.PeriodicEntry(
-                LocalDate.of(2014, 9, 1),
-                LocalDate.of(2016, 6, 10),
-                "Общая психология")));
+                new Organization.PeriodicEntry(
+                        LocalDate.of(2014, 9, 1),
+                        LocalDate.of(2016, 6, 10),
+                        "Общая психология")));
 
         //кладем все секции в объект резюме
         resume.addSection(SectionType.ACHIEVEMENT, achievement);

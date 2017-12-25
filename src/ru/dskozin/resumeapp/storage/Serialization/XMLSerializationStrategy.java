@@ -12,10 +12,10 @@ public class XMLSerializationStrategy implements SerializationStrategy {
     public XMLSerializationStrategy(){
         xmlParser = new XMLParser(
                 Resume.class,
-                OrganizationBlock.PeriodicEntry.class,
+                Organization.class,
+                Organization.PeriodicEntry.class,
                 Section.class,
-                Contact.class,
-                OrganizationBlock.class,
+                OrganizationSection.class,
                 SectionList.class,
                 SectionString.class
         );
