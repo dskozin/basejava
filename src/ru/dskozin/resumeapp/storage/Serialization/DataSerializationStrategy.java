@@ -107,12 +107,14 @@ public class DataSerializationStrategy implements SerializationStrategy {
 
         int orgSize;
         //записать количество организаций
-        stream.writeInt(orgSize = stream.size());
+        stream.writeInt(orgSize = stringList.size());
 
         //перечислить организации
         for (Organization org : stringList) {
-            //записать наименование организации
-            stream.writeUTF(org.getName());
+
+            //записать наименование и урл организации
+            stream.writeUTF(org.getLink().getName());
+            stream.writeUTF(org.getLink().getUrl());
 
             List<Organization.PeriodicEntry> periodicEntries = org.getEntries();
 
@@ -124,7 +126,12 @@ public class DataSerializationStrategy implements SerializationStrategy {
                 stream.writeUTF(periodicEntry.getStartDate().toString());
                 stream.writeUTF(periodicEntry.getEndDate().toString());
                 stream.writeUTF(periodicEntry.getHeader());
-                stream.writeUTF(periodicEntry.getContent());
+                String content;
+                if ((content = periodicEntry.getContent()) != null) {
+                    stream.writeUTF(content);
+                } else {
+                    stream.writeUTF("null");
+                }
             }
         }
 
@@ -161,7 +168,7 @@ public class DataSerializationStrategy implements SerializationStrategy {
         int orgSize = stream.readInt();
 
         for (int i = 0; i < orgSize; i++) {
-            Organization organization = new Organization(stream.readUTF());
+            Organization organization = new Organization(new Link(stream.readUTF(), stream.readUTF()));
 
             //сколько позиций
             int posSize = stream.readInt();
@@ -172,11 +179,18 @@ public class DataSerializationStrategy implements SerializationStrategy {
                 String header = stream.readUTF(),
                     content = stream.readUTF();
 
+                if (content.equals("null"))
+                    content = null;
+
                 Organization.PeriodicEntry periodicEntry =
                         new Organization.PeriodicEntry(startDate, endDate, header, content);
 
                 organization.add(periodicEntry);
             }
+
+            organizationSection.add(organization);
         }
+
+        resume.addSection(type, organizationSection);
     }
 }

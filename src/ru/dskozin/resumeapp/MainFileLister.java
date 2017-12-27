@@ -35,7 +35,7 @@ public class MainFileLister {
 
         } else {
             //раскоментировать если хотим так же файлы
-            //System.out.println(sb.toString() + file.getName());
+            //System.out.println(sb.toString() + file.getLink());
         }
     }
 }

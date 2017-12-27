@@ -14,7 +14,8 @@ import org.junit.runners.Suite;
         FileStorageTest.class,
         PathStorageTest.class,
         FileToJSONStorageTest.class,
-        FileToXMLStorageTest.class
+        FileToXMLStorageTest.class,
+        FileToDataStorageTest.class
 })
 public class AllTests {
 }

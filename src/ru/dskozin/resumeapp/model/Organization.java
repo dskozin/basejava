@@ -12,27 +12,27 @@ import java.util.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable{
 
-    private String name;
+    private Link link;
 
-    private List<PeriodicEntry> entries;
+    private List<PeriodicEntry> entries = new ArrayList<>();
 
     public Organization(){}
 
-    public Organization(String name) {
-        this.name = name;
+    public Organization(Link link) {
+        this.link = link;
     }
 
-    public Organization(String name, List<PeriodicEntry> entries) {
-        this(name);
+    public Organization(Link link, List<PeriodicEntry> entries) {
+        this(link);
         this.entries = entries;
     }
 
-    public Organization(String name, PeriodicEntry... entries){
-        this(name, Arrays.asList(entries));
+    public Organization(Link link, PeriodicEntry... entries){
+        this(link, Arrays.asList(entries));
     }
 
-    public String getName() {
-        return name;
+    public Link getLink() {
+        return link;
     }
 
     public List<PeriodicEntry> getEntries() {
@@ -46,7 +46,7 @@ public class Organization implements Serializable{
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(name).append("\n");
+        stringBuilder.append(link.getName()).append("\n");
 
         for (Iterator<PeriodicEntry> iterator = entries.iterator(); iterator.hasNext();){
             stringBuilder.append(iterator.next());
@@ -62,13 +62,13 @@ public class Organization implements Serializable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(name, that.name) &&
+        return Objects.equals(link, that.link) &&
                 Objects.equals(entries, that.entries);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, entries);
+        return Objects.hash(link, entries);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

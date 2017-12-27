@@ -37,7 +37,7 @@ public class MainResumeObject {
         //опыт работы
         OrganizationSection experience = new OrganizationSection();
         experience.add(new Organization(
-                "ООО \"Виалек\"",
+                new Link("ООО \"Виалек\"","www.vialek.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2015, 5, 15),
                         "Начальник ИТ отдела",
@@ -50,7 +50,7 @@ public class MainResumeObject {
                 )));
 
         experience.add(new Organization(
-                "ООО \"Данцер\"",
+                new Link("ООО \"Данцер\"","www.dantser.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2016, 12, 12),
                         LocalDate.of(2017, 6, 13),
@@ -59,7 +59,7 @@ public class MainResumeObject {
                 )));
 
         experience.add(new Organization(
-                "ООО \"АйТи\"",
+                new Link("ООО \"АйТи\"","www.it.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2016, 9, 15),
                         LocalDate.of(2017, 12, 10),
@@ -69,19 +69,19 @@ public class MainResumeObject {
         //образование
         OrganizationSection education = new OrganizationSection();
         education.add(new Organization(
-                "Московский Государственный Университет Приборостроения и Информатики",
+                new Link("Московский Государственный Университет Приборостроения и Информатики","www.mgupi.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2007, 9, 1),
                         LocalDate.of(2013, 6, 10),
                         "Приборостроение")));
         education.add(new Organization(
-                "Школа бизнеса МИРБИС",
+                new Link("Школа бизнеса МИРБИС","www.mirbis.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2013, 9, 1),
                         LocalDate.of(2014, 6, 10),
                         "Корпоративные финансы")));
         education.add(new Organization(
-                "Московский Государственный Гуманитарный Университет",
+                new Link("Московский Государственный Гуманитарный Университет","www.rsuh.ru"),
                 new Organization.PeriodicEntry(
                         LocalDate.of(2014, 9, 1),
                         LocalDate.of(2016, 6, 10),
