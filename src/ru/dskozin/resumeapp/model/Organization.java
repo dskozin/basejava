@@ -92,18 +92,18 @@ public class Organization implements Serializable{
             this.startDate = startDate;
             this.endDate = endDate;
             this.header = header;
+            this.content = "";
         }
 
         //Для создания записей с контентом (Опыт работы)
         public PeriodicEntry(LocalDate startDate, LocalDate endDate, String header, String content){
             this(startDate,endDate,header);
-            this.content = content;
+            this.content = content == null ? "" : content;
         }
 
         //Для создания записей с отсутствующей датой окончания
         public PeriodicEntry(LocalDate startDate, String header, String content){
-            this(startDate,LocalDate.MAX,header);
-            this.content = content;
+            this(startDate,LocalDate.MAX,header, content);
         }
 
         public PeriodicEntry(){}
@@ -133,6 +133,15 @@ public class Organization implements Serializable{
                     Objects.equals(endDate, that.endDate) &&
                     Objects.equals(header, that.header) &&
                     Objects.equals(content, that.content);
+        }
+
+        @Override
+        public String toString() {
+            return "PeriodicEntry(" + startDate +
+                    "," + endDate +
+                    "," + header +
+                    "," + content +
+                    ')';
         }
 
         @Override

@@ -22,6 +22,11 @@ public class SectionList extends Section{
         dataList.addAll(Arrays.asList(args));
     }
 
+    public SectionList(List<String> ts) {
+        Objects.requireNonNull(ts, "List cannot be null");
+        dataList = ts;
+    }
+
     public void add(String entry){
         dataList.add(entry);
     }

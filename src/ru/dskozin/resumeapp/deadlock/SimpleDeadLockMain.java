@@ -15,30 +15,19 @@ public class SimpleDeadLockMain {
 
         //объявляем анонимные потоки. Один блокирует сначала ресурс1 потом ресурс2, второй наоборот
         //когда заблокируется перестанет выводится надпись и счетчик
-        new Thread(){
-            @Override
-            public void run() {
-                while (true) {
-                    synchronized (resource1) {
-                        synchronized (resource2) {
-                            System.out.println("Blocking trying count:" + ++COUNTER);
-                        }
-                    }
-                }
-            }
-        }.start();
+        deadlock(resource2, resource1);
+        deadlock(resource1, resource2);
+    }
 
-        new Thread(){
-            @Override
-            public void run() {
-                while (true) {
-                    synchronized (resource2) {
-                        synchronized (resource1) {
-                            System.out.println("Blocking trying count:" + ++COUNTER);
-                        }
+    private static void deadlock(Object resource1, Object resource2) {
+        new Thread(() -> {
+            while (true) {
+                synchronized (resource2) {
+                    synchronized (resource1) {
+                        System.out.println("Blocking trying count:" + ++COUNTER);
                     }
                 }
             }
-        }.start();
+        }).start();
     }
 }

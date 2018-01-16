@@ -4,193 +4,132 @@ import ru.dskozin.resumeapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class DataSerializationStrategy implements SerializationStrategy {
 
     @Override
-    public void doWrite(Resume r, OutputStream out) throws IOException {
-        try (DataOutputStream stream = new DataOutputStream(out)) {
-            stream.writeUTF(r.getUuid());
-            stream.writeUTF(r.getFullName());
+    public void doWrite(Resume r, OutputStream os) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(os)) {
+            dos.writeUTF(r.getUuid());
+            dos.writeUTF(r.getFullName());
+            Map<ContactType, String> contacts = r.getContacts();
+            writeCollection(dos, contacts.entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
+            });
 
-            //записать контакты
-            writeContacts(stream, r);
-
-            //записать количество секций
-            stream.writeInt(r.getSections().size());
-
-            //перебрать секции для записи
-            for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
-                stream.writeUTF(e.getKey().name());
-
-                switch (e.getKey()) {
+            writeCollection(dos, r.getSections().entrySet(), entry -> {
+                SectionType type = entry.getKey();
+                Section section = entry.getValue();
+                dos.writeUTF(type.name());
+                switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        stream.writeUTF(((SectionString) e.getValue()).getContent());
+                        dos.writeUTF(((SectionString) section).getContent());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATION:
-                        writeStringList(e.getValue(), stream);
+                        writeCollection(dos, ((SectionList) section).getDataList(), dos::writeUTF);
                         break;
-                    case EDUCATION:
                     case EXPERIENCE:
-                        writeOrganizationSection(e.getValue(), stream);
+                    case EDUCATION:
+                        writeCollection(dos, ((OrganizationSection) section).getOrganizations(), org -> {
+                            dos.writeUTF(org.getLink().getName());
+                            dos.writeUTF(org.getLink().getUrl());
+                            writeCollection(dos, org.getEntries(), position -> {
+                                writeLocalDate(dos, position.getStartDate());
+                                writeLocalDate(dos, position.getEndDate());
+                                dos.writeUTF(position.getHeader());
+                                dos.writeUTF(position.getContent());
+                            });
+                        });
                         break;
                 }
-            }
+            });
         }
     }
 
+    private void writeLocalDate(DataOutputStream dos, LocalDate ld) throws IOException {
+        dos.writeUTF(ld.toString());
+    }
+
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        return LocalDate.parse(dis.readUTF());
+    }
 
     @Override
-    public Resume doRead(InputStream in) throws IOException {
-        try (DataInputStream stream = new DataInputStream(in)){
-            String uuid = stream.readUTF(), fullName = stream.readUTF();
+    public Resume doRead(InputStream is) throws IOException {
+        try (DataInputStream dis = new DataInputStream(is)) {
+            String uuid = dis.readUTF();
+            String fullName = dis.readUTF();
             Resume resume = new Resume(fullName, uuid);
-
-            //получить контакты
-            readContacts(stream, resume);
-
-            //секции
-            int sectSize = stream.readInt();
-            for (int i = 0; i < sectSize; i++) {
-                SectionType type = SectionType.valueOf(stream.readUTF());
-                switch (type){
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        resume.addSection(type, new SectionString(stream.readUTF()));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATION:
-                        readStringList(stream, resume, type);
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        readOrganizationSection(stream, resume, type);
-                        break;
-                }
-            }
-
+            readItems(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readItems(dis, () -> {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.addSection(sectionType, readSection(dis, sectionType));
+            });
             return resume;
         }
     }
 
-    //функция записи контактов
-    private void writeContacts(DataOutputStream stream, Resume r) throws IOException {
-        stream.writeInt(r.getContacts().size());
-
-        for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
-            stream.writeUTF(e.getKey().name());
-            stream.writeUTF(e.getValue());
+    private Section readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE:
+                return new SectionString(dis.readUTF());
+            case ACHIEVEMENT:
+            case QUALIFICATION:
+                return new SectionList(readList(dis, dis::readUTF));
+            case EXPERIENCE:
+            case EDUCATION:
+                return new OrganizationSection(
+                        readList(dis, () -> new Organization(
+                                new Link(dis.readUTF(), dis.readUTF()),
+                                readList(dis, () -> new Organization.PeriodicEntry(
+                                        readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
+                                ))
+                        )));
+            default:
+                throw new IllegalStateException();
         }
     }
 
-    //функция записи строковых списков секций
-    private void writeStringList(Section e, DataOutputStream stream) throws IOException {
-        //получаем список значений из секции
-        List<String> sectionList = ((SectionList) e).getDataList();
-
-        //указываем количество записей в списке
-        stream.writeInt(sectionList.size());
-
-        //пишем строки
-        for (String s : sectionList){
-            stream.writeUTF(s);
-        }
-    }
-
-    private void writeOrganizationSection(Section e, DataOutputStream stream) throws IOException {
-
-        List<Organization> stringList = ((OrganizationSection) e).getOrganizations();
-
-        int orgSize;
-        //записать количество организаций
-        stream.writeInt(orgSize = stringList.size());
-
-        //перечислить организации
-        for (Organization org : stringList) {
-
-            //записать наименование и урл организации
-            stream.writeUTF(org.getLink().getName());
-            stream.writeUTF(org.getLink().getUrl());
-
-            List<Organization.PeriodicEntry> periodicEntries = org.getEntries();
-
-            //записать количество позиций
-            stream.writeInt(periodicEntries.size());
-
-            //записать позиции
-            for (Organization.PeriodicEntry periodicEntry : periodicEntries) {
-                stream.writeUTF(periodicEntry.getStartDate().toString());
-                stream.writeUTF(periodicEntry.getEndDate().toString());
-                stream.writeUTF(periodicEntry.getHeader());
-                String content;
-                if ((content = periodicEntry.getContent()) != null) {
-                    stream.writeUTF(content);
-                } else {
-                    stream.writeUTF("null");
-                }
-            }
-        }
-
-    }
-
-    //функция чтения контактов
-    private void readContacts(DataInputStream stream, Resume resume) throws IOException {
-        int size = stream.readInt();
+    private <T> List<T> readList(DataInputStream dis, ElementReader<T> reader) throws IOException {
+        int size = dis.readInt();
+        List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            resume.addContact(ContactType.valueOf(stream.readUTF()), stream.readUTF());
+            list.add(reader.read());
         }
+        return list;
     }
 
-    //функция чтения строковых списков контактов
-    private void readStringList(DataInputStream stream, Resume r, SectionType type) throws IOException{
+    private interface ElementProcessor {
+        void process() throws IOException;
+    }
 
-        //создаем список
-        SectionList list = new SectionList();
+    private interface ElementReader<T> {
+        T read() throws IOException;
+    }
 
-        int size = stream.readInt();
+    private interface ElementWriter<T> {
+        void write(T t) throws IOException;
+    }
+
+    private void readItems(DataInputStream dis, ElementProcessor processor) throws IOException {
+        int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            list.add(stream.readUTF());
+            processor.process();
         }
-
-        r.addSection(type, list);
     }
 
-    //функция восстановления секции организации
-    private void readOrganizationSection(DataInputStream stream, Resume resume, SectionType type) throws IOException {
-        //создаем секцию
-        OrganizationSection organizationSection = new OrganizationSection();
-
-        //считаем организации
-        int orgSize = stream.readInt();
-
-        for (int i = 0; i < orgSize; i++) {
-            Organization organization = new Organization(new Link(stream.readUTF(), stream.readUTF()));
-
-            //сколько позиций
-            int posSize = stream.readInt();
-
-            for (int j = 0; j < posSize; j++) {
-                LocalDate startDate = LocalDate.parse(stream.readUTF()),
-                    endDate = LocalDate.parse(stream.readUTF());
-                String header = stream.readUTF(),
-                    content = stream.readUTF();
-
-                if (content.equals("null"))
-                    content = null;
-
-                Organization.PeriodicEntry periodicEntry =
-                        new Organization.PeriodicEntry(startDate, endDate, header, content);
-
-                organization.add(periodicEntry);
-            }
-
-            organizationSection.add(organization);
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, ElementWriter<T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            writer.write(item);
         }
-
-        resume.addSection(type, organizationSection);
     }
 }
