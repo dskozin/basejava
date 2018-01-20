@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.dskozin.resumeapp.Config;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.model.Resume;
@@ -25,7 +26,7 @@ public abstract class AbstractStorageTest {
     static final String UUID_3 = "uuid3";
     static final String NAME_3 = "ELena Khrapova";
 
-    protected static final String STORAGE_DIR = "./storage";
+    protected static final String STORAGE_DIR = Config.getInstance().getStorageDir();
 
     //перед каждым тестом мы наполняем стораж
     @Before

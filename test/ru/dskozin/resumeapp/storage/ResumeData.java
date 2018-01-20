@@ -12,12 +12,12 @@ public class ResumeData {
 
         //накидываем в него контакты
         //переменная contacts финальная, так что ее можно не прятать
-        resume.addContact(ContactType.EMAIL, "dskozin@mail.ru");
-        resume.addContact(ContactType.FACEBOOK, "http://facebook.com/dskozin");
-        resume.addContact(ContactType.LINKEDIN, "http://linkedin.com/dskozin");
-        resume.addContact(ContactType.MOBILE_PHONE, "+7 967 099 00 69");
-        resume.addContact(ContactType.SKYPE, "dskozin@mail.ru");
-        resume.addContact(ContactType.STACKOVERFLOW, "Нету");
+//        resume.addContact(ContactType.EMAIL, "dskozin@mail.ru");
+//        resume.addContact(ContactType.FACEBOOK, "http://facebook.com/dskozin");
+//        resume.addContact(ContactType.LINKEDIN, "http://linkedin.com/dskozin");
+//        resume.addContact(ContactType.MOBILE_PHONE, "+7 967 099 00 69");
+//        resume.addContact(ContactType.SKYPE, "dskozin@mail.ru");
+//        resume.addContact(ContactType.STACKOVERFLOW, "Нету");
 
         //создаем секцию позиция
         SectionString position = new SectionString("Middle Java Developer - разработчик корпоративного ПО");
@@ -88,11 +88,11 @@ public class ResumeData {
                         "Общая психология")));
 
         //кладем все секции в объект резюме
-        resume.addSection(SectionType.ACHIEVEMENT, achievement);
-        resume.addSection(SectionType.QUALIFICATION, qualification);
-        resume.addSection(SectionType.EXPERIENCE, experience);
-        resume.addSection(SectionType.EDUCATION, education);
-        resume.addSection(SectionType.OBJECTIVE, position);
+//        resume.addSection(SectionType.ACHIEVEMENT, achievement);
+//        resume.addSection(SectionType.QUALIFICATION, qualification);
+//        resume.addSection(SectionType.EXPERIENCE, experience);
+//        resume.addSection(SectionType.EDUCATION, education);
+//        resume.addSection(SectionType.OBJECTIVE, position);
 
         //выводим резюме на экран
         return resume;
