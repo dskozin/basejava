@@ -1,5 +1,6 @@
 package ru.dskozin.resumeapp.storage;
 
+import org.postgresql.util.PSQLException;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.exception.StorageException;
@@ -14,35 +15,36 @@ import java.util.List;
 
 public class SqlStorage implements Storage {
 
-    private final ConnectionFactory connectionFactory;
+    private final SqlUtils sqlUtils;
 
-    public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    public SqlStorage(String dbUrl, String dbUser, String dbPassword){
+        sqlUtils = new SqlUtils(dbUrl, dbUser, dbPassword);
     }
 
     @Override
     public void clear() {
         String sql = "DELETE FROM resume";
-        SqlUtils.execute(connectionFactory, sql, PreparedStatement::execute);
+        sqlUtils.execute(sql, PreparedStatement::execute);
     }
 
     @Override
     public void save(Resume r) {
-        if (isExist(r.getUuid()))
-            throw new ExistStorageException(r.getUuid());
-
         String sql = "INSERT INTO resume (uuid, full_name) VALUES (?, ?)";
-        SqlUtils.execute(connectionFactory, sql, preparedStatement -> {
+        sqlUtils.execute(sql, preparedStatement -> {
             preparedStatement.setString(1, r.getUuid());
             preparedStatement.setString(2, r.getFullName());
-            preparedStatement.execute();
+            try {
+                preparedStatement.execute();
+            } catch (PSQLException e){
+                throw new ExistStorageException(r.getUuid());
+            }
         });
     }
 
     @Override
     public void update(Resume r) {
         String sql = "UPDATE resume SET full_name = ? WHERE uuid = ?";
-        SqlUtils.execute(connectionFactory, sql, preparedStatement -> {
+        sqlUtils.execute(sql, preparedStatement -> {
             preparedStatement.setString(1, r.getFullName());
             preparedStatement.setString(2, r.getUuid());
             if (preparedStatement.executeUpdate() == 0)
@@ -53,7 +55,7 @@ public class SqlStorage implements Storage {
     @Override
     public void delete(String uuid) {
         String sql = "DELETE FROM resume WHERE uuid = ?";
-        SqlUtils.execute(connectionFactory, sql, preparedStatement -> {
+        sqlUtils.execute(sql, preparedStatement -> {
             preparedStatement.setString(1, uuid);
             if (preparedStatement.executeUpdate() == 0)
                 throw new NotExistStorageException(uuid);
@@ -63,7 +65,7 @@ public class SqlStorage implements Storage {
     @Override
     public int size() {
         String sql = "SELECT count(*) cnt FROM resume";
-        return SqlUtils.executeWithResult(connectionFactory, sql, preparedStatement -> {
+        return sqlUtils.executeWithResult(sql, preparedStatement -> {
            ResultSet resultSet = preparedStatement.executeQuery();
 
            if(!resultSet.next())
@@ -76,9 +78,9 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
 
-        String sql = "SELECT * FROM resume";
+        String sql = "SELECT * FROM resume ORDER BY full_name, uuid";
 
-        return SqlUtils.executeWithResult(connectionFactory, sql, preparedStatement -> {
+        return sqlUtils.executeWithResult(sql, preparedStatement -> {
            ResultSet resultSet = preparedStatement.executeQuery();
            List<Resume> resumes = new ArrayList<>();
 
@@ -87,8 +89,6 @@ public class SqlStorage implements Storage {
                       resultSet.getString("full_name"),
                       resultSet.getString("uuid").trim()));
            }
-
-           resumes.sort(Comparator.naturalOrder());
            return resumes;
         });
     }
@@ -97,7 +97,7 @@ public class SqlStorage implements Storage {
     public Resume get(String uuid) {
         String sql = "SELECT * FROM resume WHERE uuid = ?";
 
-        return SqlUtils.executeWithResult(connectionFactory, sql, preparedStatement -> {
+        return sqlUtils.executeWithResult(sql, preparedStatement -> {
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -105,16 +105,6 @@ public class SqlStorage implements Storage {
                 throw new NotExistStorageException(uuid);
             }
             return new Resume(resultSet.getString("full_name"), uuid);
-        });
-    }
-
-    private boolean isExist(String uuid){
-        String sql = "SELECT * FROM resume WHERE uuid = ?";
-
-        return SqlUtils.executeWithResult(connectionFactory, sql, preparedStatement -> {
-            preparedStatement.setString(1, uuid);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
         });
     }
 }

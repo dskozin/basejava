@@ -3,10 +3,17 @@ package ru.dskozin.resumeapp.sql;
 import ru.dskozin.resumeapp.exception.StorageException;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlUtils {
+
+    private final ConnectionFactory connectionFactory;
+
+    public SqlUtils(String dbUrl, String dbUser, String dbPassword){
+        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
 
     public interface Executor{
         void execute(PreparedStatement preparedStatement) throws SQLException;
@@ -16,8 +23,8 @@ public class SqlUtils {
         T execute(PreparedStatement preparedStatement) throws SQLException;
     }
 
-    public static void execute(ConnectionFactory connectionFactory, String sql, Executor executor){
-        try(Connection connection = connectionFactory.getConnection();
+    public void execute(String sql, Executor executor){
+        try(Connection connection = this.connectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql))
         {
             executor.execute(preparedStatement);
@@ -26,8 +33,8 @@ public class SqlUtils {
         }
     }
 
-    public static <T> T executeWithResult(ConnectionFactory connectionFactory, String sql, ExecutorWithResult executorWithResult){
-        try(Connection connection = connectionFactory.getConnection();
+    public <T> T executeWithResult(String sql, ExecutorWithResult executorWithResult){
+        try(Connection connection = this.connectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql))
         {
             @SuppressWarnings("unchecked")
