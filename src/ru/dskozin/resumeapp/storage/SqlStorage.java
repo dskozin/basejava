@@ -36,7 +36,10 @@ public class SqlStorage implements Storage {
             try {
                 preparedStatement.execute();
             } catch (PSQLException e){
-                throw new ExistStorageException(r.getUuid());
+                if (e.getSQLState().equals("23505"))
+                    throw new ExistStorageException(r.getUuid());
+
+                throw e;
             }
         });
     }
