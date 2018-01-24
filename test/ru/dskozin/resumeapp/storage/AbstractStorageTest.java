@@ -7,10 +7,12 @@ import org.junit.Test;
 import ru.dskozin.resumeapp.Config;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
+import ru.dskozin.resumeapp.model.ContactType;
 import ru.dskozin.resumeapp.model.Resume;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -19,11 +21,11 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractStorageTest {
 
     static Storage storage;
-    static final String UUID_1 = "uuid1";
+    static final String UUID_1 = UUID.randomUUID().toString();
     static final String NAME_1 = "Vasiliy Zaytsev";
-    static final String UUID_2 = "uuid2";
+    static final String UUID_2 = UUID.randomUUID().toString();
     static final String NAME_2 = "Dmitriy Kozin";
-    static final String UUID_3 = "uuid3";
+    static final String UUID_3 = UUID.randomUUID().toString();
     static final String NAME_3 = "ELena Khrapova";
 
     protected static final String STORAGE_DIR = Config.getInstance().getStorageDir();
@@ -33,7 +35,6 @@ public abstract class AbstractStorageTest {
     public void setUp() throws Exception {
         storage.save(ResumeData.getResume(NAME_1, UUID_1));
         storage.save(ResumeData.getResume(NAME_2, UUID_2));
-        return;
     }
 
     //после теста очищаем сторадж
@@ -75,9 +76,16 @@ public abstract class AbstractStorageTest {
     public void update() throws Exception {
         Resume resume = ResumeData.getResume(NAME_3, UUID_2);
 
+        //меняем контакты у резюме
+        resume.addContact(ContactType.MOBILE_PHONE, "+7 555 55 55");
+        resume.addContact(ContactType.SKYPE, "dmitriy.kozin@mail.ru");
+        resume.addContact(ContactType.STACKOVERFLOW, "Нету");
+
         //устанавливаем новое значение элемента
         storage.update(resume);
 
+
+        Resume get = storage.get(UUID_2);
         //элементы должны быть равны
         assertEquals(storage.get(UUID_2), resume);
     }

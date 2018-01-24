@@ -11,40 +11,39 @@ public class SqlUtils {
 
     private final ConnectionFactory connectionFactory;
 
-    public SqlUtils(String dbUrl, String dbUser, String dbPassword){
+    public SqlUtils(String dbUrl, String dbUser, String dbPassword) {
         this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public interface Executor{
-        void execute(PreparedStatement preparedStatement) throws SQLException;
+    public void execute(String sql) {
+        execute(sql, PreparedStatement::execute);
     }
 
-    public interface ExecutorWithResult<T>{
-        T execute(PreparedStatement preparedStatement) throws SQLException;
-    }
-
-    public void execute(String sql, Executor executor){
-        try(Connection connection = this.connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
-            executor.execute(preparedStatement);
-        } catch (SQLException e){
+    public <T> T execute(String sql, SqlExecutor<T> executor) {
+        try (Connection connection = this.connectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            return executor.execute(preparedStatement);
+        } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
 
-    public <T> T executeWithResult(String sql, ExecutorWithResult executorWithResult){
-        try(Connection connection = this.connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
-            @SuppressWarnings("unchecked")
-            T ret = (T) executorWithResult.execute(preparedStatement);
+    public <T> T execute(String sql, Connection connection, SqlExecutor<T> executor) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            return executor.execute(preparedStatement);
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    public <T> T executeTransactional(SqlTransactionalExecutor<T> tExecutor) {
+        try (Connection connection = this.connectionFactory.getConnection()) {
+            connection.setAutoCommit(false);
+            T ret = tExecutor.execute(connection);
+            connection.commit();
             return ret;
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
-
-
-
 }
