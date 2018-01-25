@@ -81,11 +81,12 @@ public abstract class AbstractStorageTest {
         resume.addContact(ContactType.SKYPE, "dmitriy.kozin@mail.ru");
         resume.addContact(ContactType.STACKOVERFLOW, "Нету");
 
+        resume.deleteContact(ContactType.FACEBOOK);
+        resume.deleteContact(ContactType.LINKEDIN);
+
         //устанавливаем новое значение элемента
         storage.update(resume);
 
-
-        Resume get = storage.get(UUID_2);
         //элементы должны быть равны
         assertEquals(storage.get(UUID_2), resume);
     }

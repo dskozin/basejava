@@ -53,6 +53,10 @@ public class Resume implements Comparable<Resume>, Serializable{
         contacts.put(type,contact);
     }
 
+    public void deleteContact(ContactType type){
+        contacts.remove(type);
+    }
+
     public void addSection(SectionType type, Section section){
         sections.put(type,section);
     }

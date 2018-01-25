@@ -44,11 +44,7 @@ public class SqlStorage implements Storage {
                 return null;
             });
 
-            sql = "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)";
-            sqlUtils.<Void>execute(sql, connection, preparedStatement -> {
-                contactExecutor(preparedStatement, r);
-                return null;
-            });
+            saveOrUpdateContacts(connection, r);
 
             return null;
         });
@@ -67,13 +63,7 @@ public class SqlStorage implements Storage {
                 return null;
             });
 
-            sql = "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)" +
-                    " ON CONFLICT (resume_uuid, type) DO UPDATE" +
-                    " SET value = EXCLUDED.value";
-            sqlUtils.<Void>execute(sql, connection, preparedStatement -> {
-                contactExecutor(preparedStatement, r);
-                return null;
-            });
+            saveOrUpdateContacts(connection, r);
 
             return null;
         });
@@ -164,13 +154,25 @@ public class SqlStorage implements Storage {
         return new ArrayList<>(resumes.values());
     }
 
-    private void contactExecutor(PreparedStatement preparedStatement, Resume r) throws SQLException {
-        for (Map.Entry<ContactType, String> contact : r.getContacts().entrySet()) {
+    private void saveOrUpdateContacts(Connection connection, Resume r) throws SQLException {
+
+        sqlUtils.<Void>execute("DELETE FROM contact WHERE resume_uuid = ?", preparedStatement -> {
             preparedStatement.setString(1, r.getUuid());
-            preparedStatement.setString(2, contact.getKey().name());
-            preparedStatement.setString(3, contact.getValue());
-            preparedStatement.addBatch();
-        }
-        preparedStatement.executeBatch();
+            preparedStatement.execute();
+            return null;
+        });
+
+        String sql = "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)";
+
+        sqlUtils.<Void>execute(sql, connection, preparedStatement -> {
+            for (Map.Entry<ContactType, String> contact : r.getContacts().entrySet()) {
+                preparedStatement.setString(1, r.getUuid());
+                preparedStatement.setString(2, contact.getKey().name());
+                preparedStatement.setString(3, contact.getValue());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+            return null;
+        });
     }
 }
