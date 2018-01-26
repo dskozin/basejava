@@ -30,7 +30,7 @@ public class SqlStorage implements Storage {
         sqlUtils.<Void>executeTransactional(connection -> {
 
             String sql = "INSERT INTO resume (uuid, full_name) VALUES (?, ?)";
-            sqlUtils.<Void>execute(sql, connection, preparedStatement -> {
+            try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, r.getUuid());
                 preparedStatement.setString(2, r.getFullName());
                 try {
@@ -41,8 +41,7 @@ public class SqlStorage implements Storage {
 
                     throw e;
                 }
-                return null;
-            });
+            }
 
             saveOrUpdateContacts(connection, r);
 
@@ -54,14 +53,18 @@ public class SqlStorage implements Storage {
     public void update(Resume r) {
         sqlUtils.<Void>executeTransactional(connection -> {
             String sql = "UPDATE resume SET full_name = ? WHERE uuid = ?";
-            sqlUtils.<Void>execute(sql, preparedStatement -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
                 preparedStatement.setString(1, r.getFullName());
                 preparedStatement.setString(2, r.getUuid());
                 if (preparedStatement.executeUpdate() == 0)
                     throw new NotExistStorageException(r.getUuid());
+            }
 
-                return null;
-            });
+            sql = "DELETE FROM contact WHERE resume_uuid = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+                preparedStatement.setString(1, r.getUuid());
+                preparedStatement.execute();
+            }
 
             saveOrUpdateContacts(connection, r);
 
@@ -156,15 +159,9 @@ public class SqlStorage implements Storage {
 
     private void saveOrUpdateContacts(Connection connection, Resume r) throws SQLException {
 
-        sqlUtils.<Void>execute("DELETE FROM contact WHERE resume_uuid = ?", preparedStatement -> {
-            preparedStatement.setString(1, r.getUuid());
-            preparedStatement.execute();
-            return null;
-        });
-
         String sql = "INSERT INTO contact (resume_uuid, type, value) VALUES (?, ?, ?)";
 
-        sqlUtils.<Void>execute(sql, connection, preparedStatement -> {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (Map.Entry<ContactType, String> contact : r.getContacts().entrySet()) {
                 preparedStatement.setString(1, r.getUuid());
                 preparedStatement.setString(2, contact.getKey().name());
@@ -172,7 +169,6 @@ public class SqlStorage implements Storage {
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
-            return null;
-        });
+        }
     }
 }
