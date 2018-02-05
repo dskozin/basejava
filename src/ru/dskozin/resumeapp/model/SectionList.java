@@ -12,7 +12,6 @@ public class SectionList extends Section{
 
     private static final long serialVersionUID = 1L;
 
-    //его можно открыть, он финальный
     private List<String> dataList = new ArrayList<>();
 
     public SectionList(){}
@@ -39,10 +38,7 @@ public class SectionList extends Section{
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String entry : dataList){
-            if (entry instanceof String)
-                stringBuilder.append("- ");
-
-            stringBuilder.append(entry.toString()).append("\n");
+            stringBuilder.append(entry).append("\n");
         }
 
         return stringBuilder.toString();

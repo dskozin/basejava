@@ -146,7 +146,11 @@ public abstract class AbstractStorageTest {
     //проверка получения конкретного элемента
     @Test
     public void get() throws Exception {
-        assertEquals(ResumeData.getResume(NAME_1, UUID_1), storage.get(UUID_1));
+
+        Resume expected = ResumeData.getResume(NAME_1, UUID_1);
+        Resume actual = storage.get(UUID_1);
+
+        assertEquals(expected, actual);
         assertEquals(ResumeData.getResume(NAME_2, UUID_2), storage.get(UUID_2));
     }
 
@@ -160,7 +164,9 @@ public abstract class AbstractStorageTest {
     //Поле получения значения должны идти UUID_2, потом UUID_1
     @Test
     public void getAllSorted() throws Exception {
+        Resume[] actuals = storage.getAllSorted().toArray(new Resume[storage.size()]);
+
         assertArrayEquals(new Resume[]{ResumeData.getResume(NAME_2, UUID_2), ResumeData.getResume(NAME_1, UUID_1)},
-                storage.getAllSorted().toArray(new Resume[storage.size()]));
+                actuals);
     }
 }

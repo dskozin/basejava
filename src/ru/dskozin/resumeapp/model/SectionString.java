@@ -28,7 +28,7 @@ public class SectionString extends Section{
 
     @Override
     public String toString() {
-        return "- " + content + "\n";
+        return content;
     }
 
     @Override

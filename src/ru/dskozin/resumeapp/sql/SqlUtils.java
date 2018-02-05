@@ -12,6 +12,11 @@ public class SqlUtils {
     private final ConnectionFactory connectionFactory;
 
     public SqlUtils(String dbUrl, String dbUser, String dbPassword) {
+        try {
+            DriverManager.registerDriver(new org.postgresql.Driver());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 

@@ -1,11 +1,11 @@
 package ru.dskozin.resumeapp.storage;
 
 import org.postgresql.util.PSQLException;
+import ru.dskozin.resumeapp.Config;
 import ru.dskozin.resumeapp.exception.ExistStorageException;
 import ru.dskozin.resumeapp.exception.NotExistStorageException;
 import ru.dskozin.resumeapp.exception.StorageException;
-import ru.dskozin.resumeapp.model.ContactType;
-import ru.dskozin.resumeapp.model.Resume;
+import ru.dskozin.resumeapp.model.*;
 import ru.dskozin.resumeapp.sql.SqlUtils;
 
 import java.sql.*;
@@ -17,6 +17,12 @@ public class SqlStorage implements Storage {
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlUtils = new SqlUtils(dbUrl, dbUser, dbPassword);
+    }
+
+    public SqlStorage(){
+        this(Config.getInstance().getDBUrl(),
+                Config.getInstance().getDBUser(),
+                Config.getInstance().getDBPassword());
     }
 
     @Override
@@ -45,6 +51,8 @@ public class SqlStorage implements Storage {
 
             saveOrUpdateContacts(connection, r);
 
+            saveOrUpdateSections(connection, r);
+
             return null;
         });
     }
@@ -60,13 +68,21 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(r.getUuid());
             }
 
-            sql = "DELETE FROM contact WHERE resume_uuid = ?";
+            sql = "DELETE FROM contact WHERE resume_uuid = ?;";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+                preparedStatement.setString(1, r.getUuid());
+                preparedStatement.execute();
+            }
+
+            sql = "DELETE FROM section WHERE resume_uuid = ?;";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
                 preparedStatement.setString(1, r.getUuid());
                 preparedStatement.execute();
             }
 
             saveOrUpdateContacts(connection, r);
+
+            saveOrUpdateSections(connection, r);
 
             return null;
         });
@@ -100,7 +116,9 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
 
-        String sql = "SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+        String sql = "SELECT * FROM resume r " +
+                "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+                "LEFT JOIN section s ON r.uuid = s.resume_uuid " +
                 "ORDER BY full_name, uuid";
 
         return sqlUtils.execute(sql, preparedStatement -> {
@@ -109,13 +127,17 @@ public class SqlStorage implements Storage {
             if (!resultSet.next())
                 return Collections.<Resume>emptyList();
 
-            return getResumesWithSections(resultSet);
+            Map<String, Resume> resumes = getResumesMap(resultSet);
+            fetchContacts(null, resumes);
+            fetchSections(null, resumes);
+
+            return new ArrayList<>(resumes.values());
         });
     }
 
     @Override
     public Resume get(String uuid) {
-        String sql = "SELECT * FROM resume r LEFT JOIN contact c ON r.uuid = c.resume_uuid WHERE uuid = ?";
+        String sql = "SELECT * FROM resume r WHERE uuid = ?";
 
         return sqlUtils.execute(sql, preparedStatement -> {
             preparedStatement.setString(1, uuid);
@@ -124,37 +146,92 @@ public class SqlStorage implements Storage {
             if (!resultSet.next())
                 throw new NotExistStorageException(uuid);
 
-            //берем первый элемент
-            return getResumesWithSections(resultSet).get(0);
+            Map<String, Resume> resumes = getResumesMap(resultSet);
+            fetchContacts(uuid, resumes);
+            fetchSections(uuid, resumes);
+
+            //берем нужный элемент
+            return resumes.get(uuid);
         });
     }
 
-    private List<Resume> getResumesWithSections(ResultSet resultSet) throws SQLException {
 
-        Map<String, Resume> resumes = new HashMap<>();
+    private Map<String, Resume> getResumesMap(ResultSet resultSet) throws SQLException {
 
-        //мы сейчас стоим на первом элементе, пожтому можем брать
-        String uuid = resultSet.getString("uuid");
-        Resume resume = new Resume(resultSet.getString("full_name"), uuid);
+        Map<String, Resume> resumes = new LinkedHashMap<>();
+
+        String uuid;
+        Resume resume;
 
         do {
-
             //если в хэше нет такого ключа создаем резюме
             if (!resumes.containsKey(uuid = resultSet.getString("uuid"))) {
                 resume = new Resume(resultSet.getString("full_name"), uuid);;
                 resumes.put(uuid, resume);
             }
-
-            //проверка - если вообще контактов нет, то продолжаем цикл
-            if (resultSet.getString("value").isEmpty())
-                continue;
-
-            resume.addContact(ContactType.valueOf(resultSet.getString("type")),
-                    resultSet.getString("value"));
-
         } while (resultSet.next());
 
-        return new ArrayList<>(resumes.values());
+        return resumes;
+    }
+
+    private void fetchContacts(String uuid, Map<String, Resume> resumes) throws SQLException {
+        String sql = "SELECT * FROM contact";
+
+        if (uuid != null)
+            sql += " WHERE resume_uuid = ?";
+
+        sqlUtils.execute(sql, preparedStatement -> {
+            if (uuid != null)
+                preparedStatement.setString(1, uuid);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                resumes.get(resultSet.getString("resume_uuid"))
+                        .addContact(ContactType.valueOf(resultSet.getString("type"))
+                                , resultSet.getString("value"));
+            }
+
+            return null;
+        });
+    }
+
+    private void fetchSections(String uuid, Map<String, Resume> resumes) throws SQLException {
+        String sql = "SELECT * FROM section";
+
+        if (uuid != null)
+            sql += " WHERE resume_uuid = ?";
+
+        sqlUtils.execute(sql, preparedStatement -> {
+            if (uuid != null)
+                preparedStatement.setString(1, uuid);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                SectionType type = SectionType.valueOf(resultSet.getString("type"));
+                Section section;
+
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        section = new SectionString(resultSet.getString("value"));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        section = new SectionList(resultSet.getString("value").split("\n"));
+                        break;
+                    //чтот б не ругался компилятор
+                    default:
+                        section = new SectionString("");
+                }
+
+                resumes.get(resultSet.getString("resume_uuid"))
+                        .addSection(type, section);
+            }
+
+            return null;
+        });
     }
 
     private void saveOrUpdateContacts(Connection connection, Resume r) throws SQLException {
@@ -171,4 +248,21 @@ public class SqlStorage implements Storage {
             preparedStatement.executeBatch();
         }
     }
+
+
+    private void saveOrUpdateSections(Connection connection, Resume r) throws SQLException {
+
+        String sql = "INSERT INTO section (resume_uuid, type, value) VALUES (?, ?, ?)";
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            for (Map.Entry<SectionType, Section> sections : r.getSections().entrySet()) {
+                preparedStatement.setString(1, r.getUuid());
+                preparedStatement.setString(2, sections.getKey().name());
+                preparedStatement.setString(3, sections.getValue().toString());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        }
+    }
+
 }

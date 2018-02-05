@@ -20,7 +20,7 @@ public class ResumeData {
         resume.addContact(ContactType.STACKOVERFLOW, "Нету");
 
         //создаем секцию позиция
-        SectionString position = new SectionString("Middle Java Developer - разработчик корпоративного ПО");
+        SectionString objective = new SectionString("Middle Java Developer - разработчик корпоративного ПО");
 
         //создаем секцию достижений
         SectionList achievement = new SectionList();
@@ -88,11 +88,11 @@ public class ResumeData {
                         "Общая психология")));
 
         //кладем все секции в объект резюме
-//        resume.addSection(SectionType.ACHIEVEMENT, achievement);
-//        resume.addSection(SectionType.QUALIFICATION, qualification);
+        resume.addSection(SectionType.ACHIEVEMENT, achievement);
+        resume.addSection(SectionType.QUALIFICATION, qualification);
 //        resume.addSection(SectionType.EXPERIENCE, experience);
 //        resume.addSection(SectionType.EDUCATION, education);
-//        resume.addSection(SectionType.OBJECTIVE, position);
+        resume.addSection(SectionType.OBJECTIVE, objective);
 
         //выводим резюме на экран
         return resume;
