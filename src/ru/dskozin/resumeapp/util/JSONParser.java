@@ -6,6 +6,7 @@ package ru.dskozin.resumeapp.util;
 
         import java.io.Reader;
         import java.io.Writer;
+        import java.util.Objects;
 
 public class JSONParser {
 
@@ -19,5 +20,13 @@ public class JSONParser {
 
     public static <T> void write(Writer w, T object) {
         GSON.toJson(object, w);
+    }
+
+    public static <T> T read(String content, Class<T> tClass){
+        return GSON.fromJson(content, tClass);
+    }
+
+    public static <T> String write(T object, Class<T> tClass){
+        return GSON.toJson(object, tClass);
     }
 }
