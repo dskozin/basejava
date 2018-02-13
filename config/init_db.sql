@@ -24,4 +24,3 @@ CREATE UNIQUE INDEX contact_resume_uuid_type_uindex
   ON public.contact (resume_uuid, type);
 
 CREATE UNIQUE INDEX section_index ON public.section (type, resume_uuid);
-

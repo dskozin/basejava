@@ -16,6 +16,9 @@ public class SqlStorage implements Storage {
 
     private final SqlUtils sqlUtils;
 
+    private static final String CONTACT_TABLE = "contact";
+    private static final String SECTION_TABLE = "section";
+
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlUtils = new SqlUtils(dbUrl, dbUser, dbPassword);
     }
@@ -51,9 +54,7 @@ public class SqlStorage implements Storage {
             }
 
             saveOrUpdateContacts(connection, r);
-
             saveOrUpdateSections(connection, r);
-
             return null;
         });
     }
@@ -69,11 +70,10 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(r.getUuid());
             }
 
-            deleteContacts(r, connection);
-            deleteSections(r, connection);
+            deleteEntity(r, connection, CONTACT_TABLE);
+            deleteEntity(r, connection, SECTION_TABLE);
             saveOrUpdateContacts(connection, r);
             saveOrUpdateSections(connection, r);
-
             return null;
         });
     }
@@ -247,22 +247,11 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void deleteContacts(Resume r, Connection connection) throws SQLException {
-        String sql;
-        sql = "DELETE FROM contact WHERE resume_uuid = ?;";
+    private void deleteEntity(Resume r, Connection connection, String entity) throws SQLException {
+        String sql = "DELETE FROM " + entity + " WHERE resume_uuid = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, r.getUuid());
             preparedStatement.execute();
         }
     }
-
-    private void deleteSections(Resume r, Connection connection) throws SQLException {
-        String sql;
-        sql = "DELETE FROM section WHERE resume_uuid = ?;";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, r.getUuid());
-            preparedStatement.execute();
-        }
-    }
-
 }

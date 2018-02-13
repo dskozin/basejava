@@ -6,6 +6,7 @@ import ru.dskozin.resumeapp.storage.SqlStorage;
 import ru.dskozin.resumeapp.storage.Storage;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,7 @@ public class ResumeServlet extends javax.servlet.http.HttpServlet {
 
             resume.getContacts().remove(type);
         }
+
 
         for(SectionType section : SectionType.values()){
             String value = request.getParameter(section.name());

@@ -28,13 +28,31 @@
         <tr>
             <td colspan="2"><h3>${section.getKey().getTitle()}</h3></td>
         </tr>
-        <tr>
-            <td colspan="2">${section.getValue().toString().replaceAll("\\n", "<br>")}</td>
-        </tr>
+        <c:if test="${!(section.getKey().name().equals(\"EDUCATION\") || section.getKey().name().equals(\"EXPERIENCE\"))}">
+            <tr>
+                <td colspan="2">${section.getValue().toString().replaceAll("\\n", "<br>")}</td>
+            </tr>
+        </c:if>
+        <c:if test="${section.getKey().name().equals(\"EDUCATION\") || section.getKey().name().equals(\"EXPERIENCE\")}">
+            <c:forEach items="${section.getValue().organizations}" var="organization">
+                <jsp:useBean id="organization" class="ru.dskozin.resumeapp.model.Organization"/>
+                <tr>
+                    <td colspan="2"><a href="${organization.link.url}">${organization.link.name}</a></td>
+                </tr>
+                <c:forEach items="${organization.entries}" var="entry">
+                    <tr>
+                        <td colspan="2" style="font-weight: 600">${entry.header} (С ${entry.getFormattedStartDate()} по ${entry.getFormattedEndDate()})</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">${entry.content}</td>
+                    </tr>
+                </c:forEach>
+            </c:forEach>
+        </c:if>
     </c:forEach>
     </tbody>
 </table>
-<a href="#" onclick="window.history.back()">Назад</a>
+<button onclick="window.history.back()">Назад</button>
 <jsp:include page="fragment/footer.jsp"/>
 </body>
 </html>

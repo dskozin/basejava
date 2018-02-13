@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -122,6 +123,17 @@ public class Organization implements Serializable{
 
         public String getContent() {
             return content;
+        }
+
+        public String getFormattedStartDate(){
+            return startDate.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
+        }
+
+        public String getFormattedEndDate(){
+            if (endDate.equals(LocalDate.MAX))
+                return "По нынешнее время";
+
+            return endDate.format(DateTimeFormatter.ofPattern("d MMM uuuu"));
         }
 
         @Override

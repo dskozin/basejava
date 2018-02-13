@@ -13,6 +13,13 @@
 </c:if>
 <c:if test="${resumes_list.size() > 0}">
     <table>
+        <thead>
+            <th>Полное имя</th>
+            <th>Email</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </thead>
         <tbody>
         <c:forEach items="${resumes_list}" var="resume">
             <tr>

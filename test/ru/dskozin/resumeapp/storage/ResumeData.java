@@ -90,8 +90,8 @@ public class ResumeData {
         //кладем все секции в объект резюме
         resume.addSection(SectionType.ACHIEVEMENT, achievement);
         resume.addSection(SectionType.QUALIFICATION, qualification);
-//        resume.addSection(SectionType.EXPERIENCE, experience);
-//        resume.addSection(SectionType.EDUCATION, education);
+        resume.addSection(SectionType.EXPERIENCE, experience);
+        resume.addSection(SectionType.EDUCATION, education);
         resume.addSection(SectionType.OBJECTIVE, objective);
 
         //выводим резюме на экран

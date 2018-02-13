@@ -35,6 +35,7 @@ public abstract class AbstractStorageTest {
     public void setUp() throws Exception {
         storage.save(ResumeData.getResume(NAME_1, UUID_1));
         storage.save(ResumeData.getResume(NAME_2, UUID_2));
+        return;
     }
 
     //после теста очищаем сторадж
